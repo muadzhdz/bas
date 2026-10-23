@@ -10,11 +10,13 @@ import 'profile_screen.dart';
 class MainShell extends StatefulWidget {
   final VoidCallback onLogout;
   final UserModel? user;
+  final bool showWelcomeAlert;
 
   const MainShell({
     super.key,
     required this.onLogout,
     this.user,
+    this.showWelcomeAlert = false,
   });
 
   @override
@@ -64,6 +66,7 @@ class _MainShellState extends State<MainShell> {
     final List<Widget> screens = [
       HomeScreen(
         user: widget.user,
+        showWelcomeAlert: widget.showWelcomeAlert,
         onOpenMenu: _showComingSoon,
       ),
       const InfoScreen(),

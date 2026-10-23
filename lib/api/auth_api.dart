@@ -26,7 +26,13 @@ class LoginResult {
 class AuthApi {
   static const String endpoint = 'https://6adab9277512f497b30020ef.mockapi.io/user';
 
-  // Mengambil seluruh data user dari MockAPI
+  // Mengubah plain text password menjadi SHA-1 hash hex string
+  String hashSha1(String input) {
+    final bytes = utf8.encode(input);
+    return sha1.convert(bytes).toString();
+  }
+
+  // Mengambil seluruh data user dari MockAPI (fallback / utility)
   Future<List<UserModel>> fetchUsers() async {
     try {
       final response = await http.get(Uri.parse(endpoint));
@@ -40,7 +46,7 @@ class AuthApi {
     }
   }
 
-  // Mengambil 1 user pertama (untuk preview / auto-fill testing)
+  // Mengambil 1 user pertama
   Future<UserModel?> fetchFirstUser() async {
     final users = await fetchUsers();
     if (users.isNotEmpty) {
@@ -49,13 +55,8 @@ class AuthApi {
     return null;
   }
 
-  // Mengubah plain text password menjadi SHA-1 hash hex string
-  String hashSha1(String input) {
-    final bytes = utf8.encode(input);
-    return sha1.convert(bytes).toString();
-  }
-
-  // Proses verifikasi login sesuai kriteria dosen
+  // Proses verifikasi login langsung menggunakan query parameter:
+  // https://6adab9277512f497b30020ef.mockapi.io/user?userid={NPM}&pass_sha1={HASH}
   Future<LoginResult> verifyLogin({
     required String npm,
     required String rawPassword,
@@ -68,44 +69,39 @@ class AuthApi {
       return LoginResult.failure('Password tidak boleh kosong.');
     }
 
-    final users = await fetchUsers();
-    if (users.isEmpty) {
-      return LoginResult.failure('Gagal menghubungi server MockAPI atau data kosong.');
-    }
-
-    // 1. Cari user berdasarkan userid (NPM)
-    final userMatch = users.where((u) => u.userid.toString() == cleanNpm);
-    if (userMatch.isEmpty) {
-      return LoginResult.failure('NPM / User ID "$cleanNpm" tidak ditemukan.');
-    }
-
-    final user = userMatch.first;
-
-    // 2. Hash password input dengan SHA-1 dan bandingkan dengan pass_sha1 / pass
     final passwordSha1 = hashSha1(rawPassword).toLowerCase();
-    final isPasswordValid = user.passSha1.toLowerCase() == passwordSha1 ||
-        user.pass.toLowerCase() == passwordSha1 ||
-        user.pass == rawPassword ||
-        user.passSha1 == rawPassword;
+    final queryUrl = '$endpoint?userid=$cleanNpm&pass_sha1=$passwordSha1';
 
-    if (!isPasswordValid) {
-      return LoginResult.failure('Password salah.');
+    try {
+      final response = await http.get(Uri.parse(queryUrl));
+
+      if (response.statusCode == 200) {
+        final dynamic decoded = json.decode(response.body);
+        if (decoded is List && decoded.isNotEmpty) {
+          final user = UserModel.fromJson(decoded.first);
+
+          // 1. Verifikasi roleid: wajib bernilai 14 (Mahasiswa)
+          if (user.roleid != 14) {
+            return LoginResult.failure('Role ID tidak diizinkan (Role saat ini: ${user.roleid}, harus 14).');
+          }
+
+          // 2. Verifikasi status akun: jika 1 aktif, jika 0 disable
+          if (user.status == 0 || user.aktif == 0) {
+            return LoginResult.failure('Status akun nonaktif (status: ${user.status}, aktif: ${user.aktif}). Hubungi admin.');
+          }
+
+          // 3. Verifikasi sukses
+          return LoginResult.success(
+            message: 'Selamat datang ${user.nama}',
+            user: user,
+          );
+        }
+      }
+
+      // Jika response 404 atau list kosong
+      return LoginResult.failure('NPM atau Password salah.');
+    } catch (e) {
+      return LoginResult.failure('Gagal menghubungi server MockAPI.');
     }
-
-    // 3. Verifikasi roleid: wajib bernilai 14
-    if (user.roleid != 14) {
-      return LoginResult.failure('Role ID tidak diizinkan (Role saat ini: ${user.roleid}, harus 14).');
-    }
-
-    // 4. Verifikasi status akun: jika 1 aktif, jika 0 disable
-    if (user.status == 0 || user.aktif == 0) {
-      return LoginResult.failure('Status akun nonaktif (status: ${user.status}, aktif: ${user.aktif}). Hubungi admin.');
-    }
-
-    // 5. Verifikasi sukses: "selamat datang user(ngambil dari nama)"
-    return LoginResult.success(
-      message: 'Selamat datang ${user.nama}',
-      user: user,
-    );
   }
 }

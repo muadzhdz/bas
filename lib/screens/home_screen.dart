@@ -2,17 +2,27 @@ import 'package:flutter/material.dart';
 
 import '../models/user_model.dart';
 import '../theme/app_theme.dart';
+import 'dhs_screen.dart';
 import 'khs_screen.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   final void Function(String title) onOpenMenu;
   final UserModel? user;
+  final bool showWelcomeAlert;
 
   const HomeScreen({
     super.key,
     required this.onOpenMenu,
     this.user,
+    this.showWelcomeAlert = false,
   });
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  bool _showWelcome = false;
 
   static const List<(IconData, String)> _menus = [
     (Icons.assignment_outlined, 'KRS'),
@@ -27,12 +37,67 @@ class HomeScreen extends StatelessWidget {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    if (widget.showWelcomeAlert) {
+      _showWelcome = true;
+      // Auto-dismiss setelah 2.5 detik
+      Future.delayed(const Duration(milliseconds: 2500), () {
+        if (mounted) {
+          setState(() {
+            _showWelcome = false;
+          });
+        }
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Beranda')),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 120),
         children: [
+          // Alert Selamat Datang (Muncul 2-3 detik saat baru login)
+          if (_showWelcome) ...[
+            AnimatedOpacity(
+              opacity: _showWelcome ? 1.0 : 0.0,
+              duration: const Duration(milliseconds: 350),
+              child: Container(
+                margin: const EdgeInsets.only(bottom: 14),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF15803D),
+                  borderRadius: BorderRadius.circular(14),
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xFF15803D).withValues(alpha: 0.3),
+                      blurRadius: 12,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  children: [
+                    const Icon(Icons.check_circle_rounded, color: Colors.white, size: 20),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        'Selamat datang, ${widget.user?.nama ?? "Sofi Arianti"}',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 13,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+
           _greetingCard(),
           const SizedBox(height: 22),
           Row(
@@ -46,13 +111,13 @@ class HomeScreen extends StatelessWidget {
                   color: AppColors.ink,
                 ),
               ),
-              if (user != null)
+              if (widget.user != null)
                 Text(
-                  'Status: ${user!.isStatusAktif ? "Aktif" : "Nonaktif"}',
+                  'Status: ${widget.user!.isStatusAktif ? "Aktif" : "Nonaktif"}',
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
-                    color: user!.isStatusAktif ? Colors.green[700] : Colors.red[700],
+                    color: widget.user!.isStatusAktif ? Colors.green[700] : Colors.red[700],
                   ),
                 ),
             ],
@@ -75,8 +140,8 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget _greetingCard() {
-    final displayName = user?.nama.isNotEmpty == true ? user!.nama : "Mu'adz Hudzaifah";
-    final displayNpm = user != null ? 'NPM ${user!.userid}' : 'NPM 24903460014';
+    final displayName = widget.user?.nama.isNotEmpty == true ? widget.user!.nama : "Mu'adz Hudzaifah";
+    final displayNpm = widget.user != null ? 'NPM ${widget.user!.userid}' : 'NPM 24903460014';
 
     return Container(
       padding: const EdgeInsets.all(18),
@@ -130,19 +195,16 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget _menuTile(BuildContext context, IconData icon, String label) {
-    // Kriteria:
-    // KRS aktif jika bperwalian == 1, nonaktif/disable jika 0
-    // Presensi (Absen) aktif jika babsen == 1, nonaktif/disable jika 0
     bool isEnabled = true;
     String? disabledReason;
 
     if (label == 'KRS') {
-      isEnabled = user?.isKrsAktif ?? true;
+      isEnabled = widget.user?.isKrsAktif ?? true;
       if (!isEnabled) {
         disabledReason = 'Menu KRS sedang dinonaktifkan (bperwalian = 0)';
       }
     } else if (label == 'Presensi') {
-      isEnabled = user?.isAbsenAktif ?? true;
+      isEnabled = widget.user?.isAbsenAktif ?? true;
       if (!isEnabled) {
         disabledReason = 'Menu Presensi sedang dinonaktifkan (babsen = 0)';
       }
@@ -165,15 +227,22 @@ class HomeScreen extends StatelessWidget {
                   backgroundColor: AppColors.danger,
                 ),
               );
-          } else if (label == 'KHS' || label == 'DHS') {
+          } else if (label == 'KHS') {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => KhsScreen(user: user),
+                builder: (context) => KhsScreen(user: widget.user),
+              ),
+            );
+          } else if (label == 'DHS') {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => DhsScreen(user: widget.user),
               ),
             );
           } else {
-            onOpenMenu(label);
+            widget.onOpenMenu(label);
           }
         },
         child: Container(

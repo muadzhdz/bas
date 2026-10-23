@@ -13,6 +13,6 @@ void main() {
     expect(find.text('Username'), findsOneWidget);
     expect(find.text('Password'), findsOneWidget);
     expect(find.widgetWithText(ElevatedButton, 'Login'), findsOneWidget);
-    expect(find.text('User login dari API (untuk testing):'), findsOneWidget);
+    expect(find.text('Universitas Boash'), findsOneWidget);
   });
 }

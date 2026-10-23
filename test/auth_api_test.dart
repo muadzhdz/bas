@@ -85,7 +85,7 @@ void main() {
       );
 
       expect(result.isSuccess, false);
-      expect(result.message, 'Password salah.');
+      expect(result.message, 'NPM atau Password salah.');
       expect(result.user, isNull);
     });
 
@@ -96,7 +96,7 @@ void main() {
       );
 
       expect(result.isSuccess, false);
-      expect(result.message, contains('tidak ditemukan'));
+      expect(result.message, 'NPM atau Password salah.');
     });
   });
 }
