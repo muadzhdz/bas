@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../models/user_model.dart';
 import '../theme/app_theme.dart';
+import 'khs_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   final void Function(String title) onOpenMenu;
@@ -164,6 +165,13 @@ class HomeScreen extends StatelessWidget {
                   backgroundColor: AppColors.danger,
                 ),
               );
+          } else if (label == 'KHS' || label == 'DHS') {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => KhsScreen(user: user),
+              ),
+            );
           } else {
             onOpenMenu(label);
           }
