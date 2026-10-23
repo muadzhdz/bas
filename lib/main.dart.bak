@@ -1,0 +1,41 @@
+import 'package:flutter/material.dart';
+
+import 'screens/login_screen.dart';
+import 'screens/main_shell.dart';
+import 'theme/app_theme.dart';
+
+void main() {
+  runApp(const BasApp());
+}
+
+class BasApp extends StatefulWidget {
+  const BasApp({super.key});
+
+  @override
+  State<BasApp> createState() => _BasAppState();
+}
+
+class _BasAppState extends State<BasApp> {
+  bool _isLoggedIn = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Sistem Boash',
+      debugShowCheckedModeBanner: false,
+      theme: AppTheme.light,
+      home: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 300),
+        child: _isLoggedIn
+            ? MainShell(
+                key: const ValueKey('shell'),
+                onLogout: () => setState(() => _isLoggedIn = false),
+              )
+            : LoginScreen(
+                key: const ValueKey('login'),
+                onLogin: () => setState(() => _isLoggedIn = true),
+              ),
+      ),
+    );
+  }
+}
