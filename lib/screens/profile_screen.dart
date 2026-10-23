@@ -164,6 +164,7 @@ class ProfileScreen extends StatelessWidget {
     final statusAkun = (user?.isStatusAktif ?? true) ? 'Aktif (1)' : 'Disable (0)';
     final statusKrs = (user?.isKrsAktif ?? true) ? 'Aktif (1)' : 'Disable (0)';
     final statusAbsen = (user?.isAbsenAktif ?? true) ? 'Aktif (1)' : 'Disable (0)';
+    final statusUjian = (user?.isUjianAktif ?? true) ? 'Aktif (1)' : 'Disable (0)';
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 6),
@@ -180,6 +181,7 @@ class ProfileScreen extends StatelessWidget {
           _DetailRow(icon: Icons.badge_outlined, label: 'Status Akun', value: statusAkun),
           _DetailRow(icon: Icons.assignment_outlined, label: 'Status KRS', value: statusKrs),
           _DetailRow(icon: Icons.how_to_reg_outlined, label: 'Status Absen', value: statusAbsen),
+          _DetailRow(icon: Icons.description_outlined, label: 'Status Ujian', value: statusUjian),
         ],
       ),
     );
