@@ -3,9 +3,12 @@ import 'package:flutter/material.dart';
 import '../api/auth_api.dart';
 import '../screens/main_shell.dart';
 import '../theme/app_theme.dart';
+import '../widgets/sweet_alert.dart';
 
 class AuthPage extends StatefulWidget {
-  const AuthPage({super.key});
+  final bool logoutSuccess;
+
+  const AuthPage({super.key, this.logoutSuccess = false});
 
   @override
   State<AuthPage> createState() => _AuthPageState();
@@ -19,6 +22,20 @@ class _AuthPageState extends State<AuthPage> {
   String? _errorMessage;
   bool _isVerifying = false;
   bool _isPasswordObscured = true;
+  bool _showLogoutAlert = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.logoutSuccess) {
+      _showLogoutAlert = true;
+      Future.delayed(const Duration(milliseconds: 2800), () {
+        if (mounted) {
+          setState(() => _showLogoutAlert = false);
+        }
+      });
+    }
+  }
 
   @override
   void dispose() {
@@ -41,17 +58,28 @@ class _AuthPageState extends State<AuthPage> {
     if (!mounted) return;
 
     if (result.isSuccess && result.user != null) {
-      // Login berhasil: langsung navigasi ke Beranda dengan alert selamat datang aktif
+      // 1. Tampilkan SweetAlert sukses login
+      await SweetAlert.success(
+        context: context,
+        title: 'Login Berhasil!',
+        message: 'Selamat datang, ${result.user!.nama}\nPortal Akademik siap digunakan.',
+        autoCloseDuration: const Duration(milliseconds: 1800),
+      );
+
+      if (!mounted) return;
+
+      // 2. Langsung beralih ke Beranda
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
           builder: (context) => MainShell(
             user: result.user,
-            showWelcomeAlert: true,
             onLogout: () {
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (context) => const AuthPage()),
+                MaterialPageRoute(
+                  builder: (context) => const AuthPage(logoutSuccess: true),
+                ),
               );
             },
           ),
@@ -78,6 +106,12 @@ class _AuthPageState extends State<AuthPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                // Sweet Alert Toast: Anda Berhasil Logout
+                if (_showLogoutAlert) ...[
+                  _buildLogoutSuccessAlert(),
+                  const SizedBox(height: 16),
+                ],
+
                 // Header Brand Section dengan Logo Asli Boash
                 _buildBrandHeader(),
                 const SizedBox(height: 32),
@@ -85,7 +119,7 @@ class _AuthPageState extends State<AuthPage> {
                 // Form Login Card
                 _buildFormCard(),
 
-                // Error Message Banner (Hanya muncul jika gagal)
+                // Error Message Banner (Hanya muncul jika login gagal)
                 if (_errorMessage != null) ...[
                   const SizedBox(height: 16),
                   _buildErrorBanner(),
@@ -93,6 +127,44 @@ class _AuthPageState extends State<AuthPage> {
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLogoutSuccessAlert() {
+    return AnimatedOpacity(
+      opacity: _showLogoutAlert ? 1.0 : 0.0,
+      duration: const Duration(milliseconds: 300),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        decoration: BoxDecoration(
+          color: const Color(0xFFDCFCE7),
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: const Color(0xFF86EFAC)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.green.withValues(alpha: 0.1),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Row(
+          children: const [
+            Icon(Icons.check_circle_rounded, color: Color(0xFF16A34A), size: 20),
+            SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                'Anda berhasil logout. Sampai jumpa kembali!',
+                style: TextStyle(
+                  color: Color(0xFF15803D),
+                  fontSize: 13,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -128,7 +200,7 @@ class _AuthPageState extends State<AuthPage> {
           style: TextStyle(
             fontSize: 11,
             letterSpacing: 1.4,
-            fontWeight: FontWeight.w800,
+            fontWeight: FontWeight.w900,
             color: AppColors.gold,
           ),
         ),
@@ -137,7 +209,7 @@ class _AuthPageState extends State<AuthPage> {
           'Universitas Boash',
           style: TextStyle(
             fontSize: 24,
-            fontWeight: FontWeight.w800,
+            fontWeight: FontWeight.w900,
             color: AppColors.ink,
           ),
         ),
@@ -177,7 +249,7 @@ class _AuthPageState extends State<AuthPage> {
             'Username',
             style: TextStyle(
               fontSize: 13,
-              fontWeight: FontWeight.w700,
+              fontWeight: FontWeight.w800,
               color: AppColors.ink,
             ),
           ),
@@ -214,7 +286,7 @@ class _AuthPageState extends State<AuthPage> {
             'Password',
             style: TextStyle(
               fontSize: 13,
-              fontWeight: FontWeight.w700,
+              fontWeight: FontWeight.w800,
               color: AppColors.ink,
             ),
           ),
@@ -267,7 +339,7 @@ class _AuthPageState extends State<AuthPage> {
               ),
               textStyle: const TextStyle(
                 fontSize: 15,
-                fontWeight: FontWeight.w700,
+                fontWeight: FontWeight.w800,
               ),
             ),
             child: _isVerifying
@@ -304,7 +376,7 @@ class _AuthPageState extends State<AuthPage> {
               style: const TextStyle(
                 color: AppColors.danger,
                 fontSize: 13,
-                fontWeight: FontWeight.w700,
+                fontWeight: FontWeight.w800,
               ),
             ),
           ),

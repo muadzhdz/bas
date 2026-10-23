@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../models/user_model.dart';
 import '../theme/app_theme.dart';
+import '../widgets/sweet_alert.dart';
 
 class ProfileScreen extends StatelessWidget {
   final VoidCallback onLogout;
@@ -27,7 +28,18 @@ class ProfileScreen extends StatelessWidget {
           _detailsCard(),
           const SizedBox(height: 24),
           OutlinedButton.icon(
-            onPressed: onLogout,
+            onPressed: () async {
+              final confirmed = await SweetAlert.confirm(
+                context: context,
+                title: 'Konfirmasi Keluar',
+                message: 'Apakah Anda yakin ingin keluar dari Portal Akademik Boash?',
+                confirmText: 'Ya, Keluar',
+                cancelText: 'Batal',
+              );
+              if (confirmed == true) {
+                onLogout();
+              }
+            },
             icon: const Icon(Icons.logout_rounded),
             label: const Text('Keluar'),
             style: OutlinedButton.styleFrom(

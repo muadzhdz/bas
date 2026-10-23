@@ -4,25 +4,17 @@ import '../models/user_model.dart';
 import '../theme/app_theme.dart';
 import 'dhs_screen.dart';
 import 'khs_screen.dart';
+import 'krs_screen.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends StatelessWidget {
   final void Function(String title) onOpenMenu;
   final UserModel? user;
-  final bool showWelcomeAlert;
 
   const HomeScreen({
     super.key,
     required this.onOpenMenu,
     this.user,
-    this.showWelcomeAlert = false,
   });
-
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  bool _showWelcome = false;
 
   static const List<(IconData, String)> _menus = [
     (Icons.assignment_outlined, 'KRS'),
@@ -37,68 +29,19 @@ class _HomeScreenState extends State<HomeScreen> {
   ];
 
   @override
-  void initState() {
-    super.initState();
-    if (widget.showWelcomeAlert) {
-      _showWelcome = true;
-      // Auto-dismiss setelah 2.5 detik
-      Future.delayed(const Duration(milliseconds: 2500), () {
-        if (mounted) {
-          setState(() {
-            _showWelcome = false;
-          });
-        }
-      });
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Beranda')),
+      appBar: AppBar(
+        title: const Text(
+          'Beranda',
+          style: TextStyle(fontWeight: FontWeight.w900),
+        ),
+      ),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 120),
         children: [
-          // Alert Selamat Datang (Muncul 2-3 detik saat baru login)
-          if (_showWelcome) ...[
-            AnimatedOpacity(
-              opacity: _showWelcome ? 1.0 : 0.0,
-              duration: const Duration(milliseconds: 350),
-              child: Container(
-                margin: const EdgeInsets.only(bottom: 14),
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                decoration: BoxDecoration(
-                  color: const Color(0xFF15803D),
-                  borderRadius: BorderRadius.circular(14),
-                  boxShadow: [
-                    BoxShadow(
-                      color: const Color(0xFF15803D).withValues(alpha: 0.3),
-                      blurRadius: 12,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: Row(
-                  children: [
-                    const Icon(Icons.check_circle_rounded, color: Colors.white, size: 20),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: Text(
-                        'Selamat datang, ${widget.user?.nama ?? "Sofi Arianti"}',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w700,
-                          fontSize: 13,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-
-          _greetingCard(),
+          // Kartu Identitas Mahasiswa (Tanpa teks selamat datang, dengan foto mentor)
+          _studentIdentityCard(),
           const SizedBox(height: 22),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -107,17 +50,17 @@ class _HomeScreenState extends State<HomeScreen> {
                 'Menu Akademik',
                 style: TextStyle(
                   fontSize: 16,
-                  fontWeight: FontWeight.w800,
+                  fontWeight: FontWeight.w900,
                   color: AppColors.ink,
                 ),
               ),
-              if (widget.user != null)
+              if (user != null)
                 Text(
-                  'Status: ${widget.user!.isStatusAktif ? "Aktif" : "Nonaktif"}',
+                  'Status: ${user!.isStatusAktif ? "Aktif" : "Nonaktif"}',
                   style: TextStyle(
                     fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    color: widget.user!.isStatusAktif ? Colors.green[700] : Colors.red[700],
+                    fontWeight: FontWeight.w700,
+                    color: user!.isStatusAktif ? Colors.green[700] : Colors.red[700],
                   ),
                 ),
             ],
@@ -139,9 +82,9 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _greetingCard() {
-    final displayName = widget.user?.nama.isNotEmpty == true ? widget.user!.nama : "Mu'adz Hudzaifah";
-    final displayNpm = widget.user != null ? 'NPM ${widget.user!.userid}' : 'NPM 24903460014';
+  Widget _studentIdentityCard() {
+    final displayName = user?.nama.isNotEmpty == true ? user!.nama : "Mu'adz Hudzaifah";
+    final displayNpm = user != null ? 'NPM ${user!.userid}' : 'NPM 24903460014';
 
     return Container(
       padding: const EdgeInsets.all(18),
@@ -151,7 +94,14 @@ class _HomeScreenState extends State<HomeScreen> {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.navy.withValues(alpha: 0.2),
+            blurRadius: 18,
+            offset: const Offset(0, 8),
+          ),
+        ],
       ),
       child: Row(
         children: [
@@ -159,35 +109,60 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Selamat datang,',
-                  style: TextStyle(color: Color(0xFF9FB0C9), fontSize: 13),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  decoration: BoxDecoration(
+                    color: AppColors.white.withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: const Text(
+                    'TEKNOLOGI REKAYASA MULTIMEDIA',
+                    style: TextStyle(
+                      color: AppColors.gold,
+                      fontSize: 10,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 0.8,
+                    ),
+                  ),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: 8),
                 Text(
                   displayName,
                   style: const TextStyle(
                     color: AppColors.white,
                     fontSize: 18,
-                    fontWeight: FontWeight.w800,
+                    fontWeight: FontWeight.w900,
                   ),
                 ),
-                const SizedBox(height: 2),
+                const SizedBox(height: 3),
                 Text(
                   displayNpm,
-                  style: const TextStyle(color: AppColors.gold, fontSize: 13),
+                  style: const TextStyle(
+                    color: Color(0xFF9FB0C9),
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ],
             ),
           ),
+          const SizedBox(width: 14),
+          // Foto Mahasiswa (Foto Mentor)
           Container(
-            width: 52,
-            height: 52,
+            padding: const EdgeInsets.all(2.5),
             decoration: BoxDecoration(
-              color: AppColors.white.withValues(alpha: 0.12),
-              borderRadius: BorderRadius.circular(14),
+              color: AppColors.gold,
+              borderRadius: BorderRadius.circular(18),
             ),
-            child: const Icon(Icons.school_rounded, color: AppColors.gold, size: 28),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: Image.asset(
+                'assets/images/mentor-profile.jpg',
+                width: 58,
+                height: 58,
+                fit: BoxFit.cover,
+              ),
+            ),
           ),
         ],
       ),
@@ -199,12 +174,12 @@ class _HomeScreenState extends State<HomeScreen> {
     String? disabledReason;
 
     if (label == 'KRS') {
-      isEnabled = widget.user?.isKrsAktif ?? true;
+      isEnabled = user?.isKrsAktif ?? true;
       if (!isEnabled) {
         disabledReason = 'Menu KRS sedang dinonaktifkan (bperwalian = 0)';
       }
     } else if (label == 'Presensi') {
-      isEnabled = widget.user?.isAbsenAktif ?? true;
+      isEnabled = user?.isAbsenAktif ?? true;
       if (!isEnabled) {
         disabledReason = 'Menu Presensi sedang dinonaktifkan (babsen = 0)';
       }
@@ -227,22 +202,29 @@ class _HomeScreenState extends State<HomeScreen> {
                   backgroundColor: AppColors.danger,
                 ),
               );
+          } else if (label == 'KRS') {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => KrsScreen(user: user),
+              ),
+            );
           } else if (label == 'KHS') {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => KhsScreen(user: widget.user),
+                builder: (context) => KhsScreen(user: user),
               ),
             );
           } else if (label == 'DHS') {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => DhsScreen(user: widget.user),
+                builder: (context) => DhsScreen(user: user),
               ),
             );
           } else {
-            widget.onOpenMenu(label);
+            onOpenMenu(label);
           }
         },
         child: Container(
@@ -273,7 +255,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 label,
                 style: TextStyle(
                   fontSize: 12,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.w700,
                   color: isEnabled ? AppColors.ink : const Color(0xFF94A3B8),
                 ),
               ),

@@ -43,8 +43,9 @@ class AppTheme {
         centerTitle: false,
         titleTextStyle: TextStyle(
           color: AppColors.white,
-          fontSize: 18,
-          fontWeight: FontWeight.w700,
+          fontSize: 19,
+          fontWeight: FontWeight.w900,
+          letterSpacing: 0.3,
         ),
       ),
       inputDecorationTheme: InputDecorationTheme(
