@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../models/user_model.dart';
 import '../widgets/floating_pill_nav_bar.dart';
 import 'home_screen.dart';
 import 'info_screen.dart';
@@ -8,8 +9,13 @@ import 'profile_screen.dart';
 
 class MainShell extends StatefulWidget {
   final VoidCallback onLogout;
+  final UserModel? user;
 
-  const MainShell({super.key, required this.onLogout});
+  const MainShell({
+    super.key,
+    required this.onLogout,
+    this.user,
+  });
 
   @override
   State<MainShell> createState() => _MainShellState();
@@ -56,10 +62,16 @@ class _MainShellState extends State<MainShell> {
   @override
   Widget build(BuildContext context) {
     final List<Widget> screens = [
-      HomeScreen(onOpenMenu: _showComingSoon),
+      HomeScreen(
+        user: widget.user,
+        onOpenMenu: _showComingSoon,
+      ),
       const InfoScreen(),
       const NewsScreen(),
-      ProfileScreen(onLogout: widget.onLogout),
+      ProfileScreen(
+        user: widget.user,
+        onLogout: widget.onLogout,
+      ),
     ];
 
     return Scaffold(

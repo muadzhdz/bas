@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 
+import '../models/user_model.dart';
 import '../theme/app_theme.dart';
 
 class ProfileScreen extends StatelessWidget {
   final VoidCallback onLogout;
+  final UserModel? user;
 
-  const ProfileScreen({super.key, required this.onLogout});
+  const ProfileScreen({
+    super.key,
+    required this.onLogout,
+    this.user,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -39,6 +45,12 @@ class ProfileScreen extends StatelessWidget {
   }
 
   Widget _identityCard() {
+    final displayName = user?.nama.isNotEmpty == true ? user!.nama : "Mu'adz Hudzaifah";
+    final displayNpm = user != null ? 'NPM ${user!.userid}' : 'NPM 24903460014';
+    final roleText = user != null
+        ? (user!.isRoleMahasiswa ? 'Mahasiswa (Role 14)' : 'Role ${user!.roleid}')
+        : 'Teknologi Rekayasa Multimedia';
+
     return Container(
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
@@ -61,27 +73,27 @@ class ProfileScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 16),
-          const Expanded(
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Mu'adz Hudzaifah",
-                  style: TextStyle(
+                  displayName,
+                  style: const TextStyle(
                     color: AppColors.white,
                     fontSize: 18,
                     fontWeight: FontWeight.w800,
                   ),
                 ),
-                SizedBox(height: 4),
+                const SizedBox(height: 4),
                 Text(
-                  'NPM 24903460014',
-                  style: TextStyle(color: AppColors.gold, fontSize: 13),
+                  displayNpm,
+                  style: const TextStyle(color: AppColors.gold, fontSize: 13),
                 ),
-                SizedBox(height: 2),
+                const SizedBox(height: 2),
                 Text(
-                  'Teknologi Rekayasa Multimedia',
-                  style: TextStyle(color: Color(0xFF9FB0C9), fontSize: 13),
+                  roleText,
+                  style: const TextStyle(color: Color(0xFF9FB0C9), fontSize: 13),
                 ),
               ],
             ),
@@ -148,6 +160,11 @@ class ProfileScreen extends StatelessWidget {
   }
 
   Widget _detailsCard() {
+    final email = user != null ? '${user!.userid}@boash.ac.id' : 'muadzhdz@boash.ac.id';
+    final statusAkun = (user?.isStatusAktif ?? true) ? 'Aktif (1)' : 'Disable (0)';
+    final statusKrs = (user?.isKrsAktif ?? true) ? 'Aktif (1)' : 'Disable (0)';
+    final statusAbsen = (user?.isAbsenAktif ?? true) ? 'Aktif (1)' : 'Disable (0)';
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 6),
       decoration: BoxDecoration(
@@ -156,11 +173,13 @@ class ProfileScreen extends StatelessWidget {
         border: Border.all(color: AppColors.border),
       ),
       child: Column(
-        children: const [
-          _DetailRow(icon: Icons.email_outlined, label: 'Email', value: 'muadzhdz@boash.ac.id'),
-          _DetailRow(icon: Icons.phone_outlined, label: 'Telepon', value: '085694718914'),
-          _DetailRow(icon: Icons.calendar_today_outlined, label: 'Angkatan', value: '2024'),
-          _DetailRow(icon: Icons.badge_outlined, label: 'Status', value: 'Aktif'),
+        children: [
+          _DetailRow(icon: Icons.email_outlined, label: 'Email', value: email),
+          const _DetailRow(icon: Icons.phone_outlined, label: 'Telepon', value: '085694718914'),
+          const _DetailRow(icon: Icons.calendar_today_outlined, label: 'Angkatan', value: '2024'),
+          _DetailRow(icon: Icons.badge_outlined, label: 'Status Akun', value: statusAkun),
+          _DetailRow(icon: Icons.assignment_outlined, label: 'Status KRS', value: statusKrs),
+          _DetailRow(icon: Icons.how_to_reg_outlined, label: 'Status Absen', value: statusAbsen),
         ],
       ),
     );

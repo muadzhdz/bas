@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../api/auth_api.dart';
+import '../models/user_model.dart';
 import '../screens/main_shell.dart';
 
 class AuthPage extends StatefulWidget {
@@ -12,19 +13,23 @@ class AuthPage extends StatefulWidget {
 }
 
 class _AuthPageState extends State<AuthPage> {
-  // Controller untuk input username
+  // Controller untuk input username (NPM)
   final TextEditingController _usernameController = TextEditingController();
   // Controller untuk input password
   final TextEditingController _passwordController = TextEditingController();
-  Map<String, dynamic>? _user;
+
+  final AuthApi _authApi = AuthApi();
+  UserModel? _apiUser;
+  UserModel? _loggedInUser;
   String? _message;
+  bool _isSuccess = false;
   bool _isLoading = false;
+  bool _isVerifying = false;
 
   @override
-  // Menginisialisasi state
   void initState() {
     super.initState();
-    _loadUser(); // ambil user saat halaman dibuka
+    _loadUser(); // ambil user dari MockAPI saat halaman dibuka
   }
 
   @override
@@ -34,62 +39,62 @@ class _AuthPageState extends State<AuthPage> {
     super.dispose();
   }
 
-  // Fungsi ambil user
-  void _loadUser() async {
+  // Fungsi ambil user dari MockAPI
+  Future<void> _loadUser() async {
     setState(() {
       _isLoading = true;
+    });
+    try {
+      final user = await _authApi.fetchFirstUser();
+      if (!mounted) return;
+      setState(() {
+        _apiUser = user;
+        _isLoading = false;
+      });
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  // Fungsi untuk mengisi NPM & password testing secara otomatis
+  void _fillCredentials() {
+    if (_apiUser != null) {
+      _usernameController.text = _apiUser!.userid.toString();
+      // Password default testing adalah NPM (hash SHA-1 cocok dengan pass_sha1 di MockAPI)
+      _passwordController.text = _apiUser!.userid.toString();
+    }
+  }
+
+  // Fungsi untuk proses verifikasi login
+  Future<void> _login() async {
+    setState(() {
+      _isVerifying = true;
       _message = null;
     });
-    final api = AuthApi();
-    // Mengambil user acak dari API
-    final user = await api.fetchRandomUser();
+
+    final result = await _authApi.verifyLogin(
+      npm: _usernameController.text,
+      rawPassword: _passwordController.text,
+    );
+
     if (!mounted) return;
+
     setState(() {
-      _user = user;
-      _isLoading = false;
+      _isVerifying = false;
+      _isSuccess = result.isSuccess;
+      _message = result.message;
+      _loggedInUser = result.user;
     });
-  }
-
-  // Fungsi untuk mengisi username & password testing secara otomatis
-  void _fillCredentials() {
-    if (_user != null) {
-      _usernameController.text = _user!['login']['username'] ?? '';
-      _passwordController.text = _user!['login']['password'] ?? '';
-    }
-  }
-
-  // Fungsi untuk proses login
-  void _login() {
-    if (_user == null) {
-      setState(() {
-        _message = 'User belum dimuat';
-      });
-      return;
-    }
-    // Mendapatkan username dari user API
-    final username = _user!['login']['username'];
-    // Mendapatkan password dari user API
-    final password = _user!['login']['password'];
-    // Memeriksa apakah username dan password cocok
-    if (_usernameController.text == username &&
-        _passwordController.text == password) {
-      setState(() {
-        _message = 'Login berhasil!';
-      });
-      // Jika tidak cocok
-    } else {
-      setState(() {
-        _message = 'Username atau password salah';
-      });
-    }
   }
 
   @override
   Widget build(BuildContext context) {
-    // Mendapatkan username dan password saat ini untuk ditampilkan
-    final currentUsername = _user?['login']?['username'] ?? (_isLoading ? 'Memuat...' : '-');
-    final currentPassword = _user?['login']?['password'] ?? (_isLoading ? 'Memuat...' : '-');
-    final isSuccess = _message == 'Login berhasil!';
+    final currentNpm = _apiUser?.userid.toString() ?? (_isLoading ? 'Memuat...' : '-');
+    final currentName = _apiUser?.nama ?? (_isLoading ? 'Memuat...' : '-');
+    final currentSha1 = _apiUser?.passSha1 ?? (_isLoading ? 'Memuat...' : '-');
 
     return Scaffold(
       appBar: AppBar(title: const Text('Login')),
@@ -98,45 +103,91 @@ class _AuthPageState extends State<AuthPage> {
           padding: const EdgeInsets.all(20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            // Widget di dalam kolom
             children: [
               const Text('Username'),
               TextField(
                 controller: _usernameController,
-                decoration: const InputDecoration(border: UnderlineInputBorder()),
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  border: UnderlineInputBorder(),
+                  hintText: 'Masukkan NPM (contoh: 12523030)',
+                ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 12),
               // Input untuk password
               const Text('Password'),
               TextField(
                 controller: _passwordController,
                 obscureText: true,
-                decoration: const InputDecoration(border: UnderlineInputBorder()),
+                decoration: const InputDecoration(
+                  border: UnderlineInputBorder(),
+                  hintText: 'Masukkan Password',
+                ),
               ),
+              const SizedBox(height: 20),
               // Tombol login
-              const SizedBox(height: 20),
               ElevatedButton(
-                onPressed: _login,
-                child: const Text('Login'),
+                onPressed: _isVerifying ? null : _login,
+                child: _isVerifying
+                    ? const SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Text('Login'),
               ),
-              // Menampilkan pesan
+              // Menampilkan pesan hasil verifikasi
               const SizedBox(height: 20),
-              if (_message != null)
-                Text(
-                  _message!,
-                  style: TextStyle(
-                    color: isSuccess ? Colors.green : Colors.red,
-                    fontWeight: FontWeight.bold,
+              if (_message != null) ...[
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(14),
+                  decoration: BoxDecoration(
+                    color: _isSuccess
+                        ? Colors.green.withValues(alpha: 0.1)
+                        : Colors.red.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(
+                      color: _isSuccess ? Colors.green : Colors.red,
+                    ),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        _message!,
+                        style: TextStyle(
+                          color: _isSuccess ? Colors.green[800] : Colors.red[800],
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                        ),
+                      ),
+                      if (_isSuccess && _loggedInUser != null) ...[
+                        const SizedBox(height: 8),
+                        Text(
+                          'Role: ${_loggedInUser!.roleid} (Mahasiswa) • '
+                          'Status: ${_loggedInUser!.status == 1 ? "Aktif (1)" : "Disable (0)"}\n'
+                          'KRS: ${_loggedInUser!.isKrsAktif ? "Aktif (1)" : "Disable (0)"} • '
+                          'Absen: ${_loggedInUser!.isAbsenAktif ? "Aktif (1)" : "Disable (0)"}',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.green[900],
+                          ),
+                        ),
+                      ],
+                    ],
                   ),
                 ),
-              if (isSuccess) ...[
-                const SizedBox(height: 12),
+              ],
+              if (_isSuccess) ...[
+                const SizedBox(height: 14),
                 ElevatedButton.icon(
                   onPressed: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => MainShell(
+                          user: _loggedInUser,
                           onLogout: () => Navigator.pop(context),
                         ),
                       ),
@@ -146,15 +197,27 @@ class _AuthPageState extends State<AuthPage> {
                   label: const Text('Masuk ke Dashboard Sistem Boash'),
                 ),
               ],
-              const Divider(height: 30),
-              const Text("User login dari API (untuk testing):"),
-              const SizedBox(height: 4),
-              SelectableText("Username: $currentUsername"),
-              SelectableText("Password: $currentPassword"),
-              const SizedBox(height: 12),
+              const Divider(height: 36),
+              const Text(
+                'User login dari API (untuk testing):',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 8),
+              SelectableText('NPM (userid): $currentNpm'),
+              SelectableText('Nama: $currentName'),
+              SelectableText('Password test: $currentNpm'),
+              SelectableText('pass_sha1: $currentSha1'),
+              if (_apiUser != null) ...[
+                SelectableText(
+                  'Role ID: ${_apiUser!.roleid} | '
+                  'Status: ${_apiUser!.status} | '
+                  'Absen: ${_apiUser!.babsen} | '
+                  'KRS: ${_apiUser!.bperwalian}',
+                ),
+              ],
+              const SizedBox(height: 14),
               Row(
                 children: [
-                  // Tombol untuk mengganti user acak
                   ElevatedButton(
                     onPressed: _isLoading ? null : _loadUser,
                     child: _isLoading
@@ -163,12 +226,11 @@ class _AuthPageState extends State<AuthPage> {
                             height: 16,
                             child: CircularProgressIndicator(strokeWidth: 2),
                           )
-                        : const Text('Ganti User Acak'),
+                        : const Text('Muat Ulang API'),
                   ),
                   const SizedBox(width: 10),
-                  // Tombol praktis untuk auto-fill testing
                   OutlinedButton(
-                    onPressed: _user == null ? null : _fillCredentials,
+                    onPressed: _apiUser == null ? null : _fillCredentials,
                     child: const Text('Isi Otomatis'),
                   ),
                 ],
