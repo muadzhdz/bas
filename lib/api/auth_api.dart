@@ -35,7 +35,9 @@ class AuthApi {
   // Mengambil seluruh data user dari MockAPI (fallback / utility)
   Future<List<UserModel>> fetchUsers() async {
     try {
-      final response = await http.get(Uri.parse(endpoint));
+      final response = await http
+          .get(Uri.parse(endpoint))
+          .timeout(const Duration(seconds: 15));
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
         return data.map((jsonItem) => UserModel.fromJson(jsonItem)).toList();
@@ -73,7 +75,9 @@ class AuthApi {
     final queryUrl = '$endpoint?userid=$cleanNpm&pass_sha1=$passwordSha1';
 
     try {
-      final response = await http.get(Uri.parse(queryUrl));
+      final response = await http
+          .get(Uri.parse(queryUrl))
+          .timeout(const Duration(seconds: 15));
 
       if (response.statusCode == 200) {
         final dynamic decoded = json.decode(response.body);
