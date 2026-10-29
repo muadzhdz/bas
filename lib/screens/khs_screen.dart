@@ -235,7 +235,7 @@ class _KhsScreenState extends State<KhsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.offWhite,
+      backgroundColor: AppColors.white,
       appBar: AppBar(
         title: const Text('Kartu Hasil Studi (KHS)'),
         actions: [

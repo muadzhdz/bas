@@ -3,12 +3,9 @@ import 'package:flutter/material.dart';
 import '../api/auth_api.dart';
 import '../screens/main_shell.dart';
 import '../theme/app_theme.dart';
-import '../widgets/sweet_alert.dart';
 
 class AuthPage extends StatefulWidget {
-  final bool logoutSuccess;
-
-  const AuthPage({super.key, this.logoutSuccess = false});
+  const AuthPage({super.key});
 
   @override
   State<AuthPage> createState() => _AuthPageState();
@@ -22,20 +19,6 @@ class _AuthPageState extends State<AuthPage> {
   String? _errorMessage;
   bool _isVerifying = false;
   bool _isPasswordObscured = true;
-  bool _showLogoutAlert = false;
-
-  @override
-  void initState() {
-    super.initState();
-    if (widget.logoutSuccess) {
-      _showLogoutAlert = true;
-      Future.delayed(const Duration(milliseconds: 2800), () {
-        if (mounted) {
-          setState(() => _showLogoutAlert = false);
-        }
-      });
-    }
-  }
 
   @override
   void dispose() {
@@ -58,17 +41,7 @@ class _AuthPageState extends State<AuthPage> {
     if (!mounted) return;
 
     if (result.isSuccess && result.user != null) {
-      // 1. Tampilkan SweetAlert sukses login
-      await SweetAlert.success(
-        context: context,
-        title: 'Login Berhasil!',
-        message: 'Selamat datang, ${result.user!.nama}\nPortal Akademik siap digunakan.',
-        autoCloseDuration: const Duration(milliseconds: 1800),
-      );
-
-      if (!mounted) return;
-
-      // 2. Langsung beralih ke Beranda
+      // Langsung beralih ke Beranda tanpa alert popup
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
@@ -78,7 +51,7 @@ class _AuthPageState extends State<AuthPage> {
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const AuthPage(logoutSuccess: true),
+                  builder: (context) => const AuthPage(),
                 ),
               );
             },
@@ -97,7 +70,7 @@ class _AuthPageState extends State<AuthPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.offWhite,
+      backgroundColor: AppColors.white,
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
@@ -106,13 +79,7 @@ class _AuthPageState extends State<AuthPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // Sweet Alert Toast: Anda Berhasil Logout
-                if (_showLogoutAlert) ...[
-                  _buildLogoutSuccessAlert(),
-                  const SizedBox(height: 16),
-                ],
-
-                // Header Brand Section dengan Logo Asli Boash
+                // Header Brand Section dengan Logo Boash
                 _buildBrandHeader(),
                 const SizedBox(height: 32),
 
@@ -124,47 +91,22 @@ class _AuthPageState extends State<AuthPage> {
                   const SizedBox(height: 16),
                   _buildErrorBanner(),
                 ],
+
+                const SizedBox(height: 28),
+                const Center(
+                  child: Text(
+                    'Boash Academic System',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.muted,
+                      letterSpacing: 0.3,
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildLogoutSuccessAlert() {
-    return AnimatedOpacity(
-      opacity: _showLogoutAlert ? 1.0 : 0.0,
-      duration: const Duration(milliseconds: 300),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        decoration: BoxDecoration(
-          color: const Color(0xFFDCFCE7),
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: const Color(0xFF86EFAC)),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.green.withValues(alpha: 0.1),
-              blurRadius: 12,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Row(
-          children: const [
-            Icon(Icons.check_circle_rounded, color: Color(0xFF16A34A), size: 20),
-            SizedBox(width: 10),
-            Expanded(
-              child: Text(
-                'Anda berhasil logout. Sampai jumpa kembali!',
-                style: TextStyle(
-                  color: Color(0xFF15803D),
-                  fontSize: 13,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ),
-          ],
         ),
       ),
     );
@@ -183,9 +125,9 @@ class _AuthPageState extends State<AuthPage> {
             border: Border.all(color: AppColors.border),
             boxShadow: [
               BoxShadow(
-                color: AppColors.navy.withValues(alpha: 0.12),
+                color: AppColors.navy.withValues(alpha: 0.08),
                 blurRadius: 18,
-                offset: const Offset(0, 8),
+                offset: const Offset(0, 6),
               ),
             ],
           ),
@@ -206,14 +148,14 @@ class _AuthPageState extends State<AuthPage> {
         ),
         const SizedBox(height: 4),
         const Text(
-          'Universitas Boash',
+          'Boash Academic System',
           style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.w900,
             color: AppColors.ink,
           ),
         ),
-        const SizedBox(height: 4),
+        const SizedBox(height: 6),
         const Text(
           'Silakan masuk menggunakan NPM dan kata sandi Anda',
           textAlign: TextAlign.center,
@@ -235,7 +177,7 @@ class _AuthPageState extends State<AuthPage> {
         border: Border.all(color: AppColors.border),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
+            color: Colors.black.withValues(alpha: 0.03),
             blurRadius: 20,
             offset: const Offset(0, 6),
           ),
@@ -244,9 +186,9 @@ class _AuthPageState extends State<AuthPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Label Username (NPM)
+          // Label NPM
           const Text(
-            'Username',
+            'NPM',
             style: TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.w800,
@@ -263,7 +205,7 @@ class _AuthPageState extends State<AuthPage> {
               hintText: 'Masukkan NPM (contoh: 12523030)',
               hintStyle: const TextStyle(fontSize: 13, color: AppColors.muted),
               filled: true,
-              fillColor: AppColors.offWhite,
+              fillColor: AppColors.white,
               contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
@@ -308,7 +250,7 @@ class _AuthPageState extends State<AuthPage> {
               hintText: 'Masukkan Password',
               hintStyle: const TextStyle(fontSize: 13, color: AppColors.muted),
               filled: true,
-              fillColor: AppColors.offWhite,
+              fillColor: AppColors.white,
               contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
@@ -326,7 +268,7 @@ class _AuthPageState extends State<AuthPage> {
           ),
           const SizedBox(height: 22),
 
-          // Tombol Login (ElevatedButton)
+          // Tombol Login
           ElevatedButton(
             onPressed: _isVerifying ? null : _login,
             style: ElevatedButton.styleFrom(

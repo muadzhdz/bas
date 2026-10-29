@@ -26,7 +26,7 @@ class InfoScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Info Kampus')),
+      backgroundColor: AppColors.white,
       body: ListView.separated(
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 120),
         itemCount: _posts.length,

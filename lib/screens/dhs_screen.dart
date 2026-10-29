@@ -52,7 +52,7 @@ class _DhsScreenState extends State<DhsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF0F2F5),
+      backgroundColor: AppColors.white,
       appBar: AppBar(
         title: const Text('Daftar Hasil Studi (DHS)'),
         actions: [

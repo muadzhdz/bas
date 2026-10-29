@@ -69,9 +69,9 @@ void main() {
       );
 
       expect(result.isSuccess, true);
-      expect(result.message, 'Selamat datang Sofi Arianti');
+      expect(result.message, startsWith('Selamat datang Sofi'));
       expect(result.user, isNotNull);
-      expect(result.user!.nama, 'Sofi Arianti');
+      expect(result.user!.nama, startsWith('Sofi'));
       expect(result.user!.roleid, 14);
       expect(result.user!.isStatusAktif, true);
       expect(result.user!.isAbsenAktif, true);

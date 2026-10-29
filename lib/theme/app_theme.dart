@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 class AppColors {
   AppColors._();
 
-  static const Color navy = Color(0xFF0B2545);
-  static const Color navyDark = Color(0xFF071A33);
-  static const Color gold = Color(0xFFC9A227);
-  static const Color goldSoft = Color(0xFFF6EDD3);
+  static const Color navy = Color(0xFF182B52);
+  static const Color navyDark = Color(0xFF0F1C36);
+  static const Color gold = Color(0xFFD3A62A);
+  static const Color goldSoft = Color(0xFFFBF4E2);
   static const Color white = Color(0xFFFFFFFF);
-  static const Color offWhite = Color(0xFFF5F7FA);
-  static const Color ink = Color(0xFF111827);
-  static const Color muted = Color(0xFF6B7280);
+  static const Color offWhite = Color(0xFFF8FAFC);
+  static const Color ink = Color(0xFF0F172A);
+  static const Color muted = Color(0xFF64748B);
   static const Color border = Color(0xFFE2E8F0);
   static const Color danger = Color(0xFFDC2626);
 }
@@ -33,24 +33,24 @@ class AppTheme {
     return ThemeData(
       useMaterial3: true,
       colorScheme: scheme,
-      scaffoldBackgroundColor: AppColors.offWhite,
+      scaffoldBackgroundColor: AppColors.white,
       splashFactory: InkSparkle.splashFactory,
       appBarTheme: const AppBarTheme(
         backgroundColor: AppColors.navy,
         foregroundColor: AppColors.white,
         elevation: 0,
         scrolledUnderElevation: 0,
-        centerTitle: false,
+        centerTitle: true,
         titleTextStyle: TextStyle(
           color: AppColors.white,
-          fontSize: 19,
-          fontWeight: FontWeight.w900,
-          letterSpacing: 0.3,
+          fontSize: 18,
+          fontWeight: FontWeight.w800,
+          letterSpacing: 0.2,
         ),
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: AppColors.offWhite,
+        fillColor: AppColors.white,
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),

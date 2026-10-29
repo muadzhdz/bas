@@ -25,7 +25,7 @@ class KrsScreen extends StatelessWidget {
     final totalSks = _krsCourses.fold(0, (sum, item) => sum + item.$3);
 
     return Scaffold(
-      backgroundColor: AppColors.offWhite,
+      backgroundColor: AppColors.white,
       appBar: AppBar(
         title: const Text('Kartu Rencana Studi (KRS)'),
         actions: [
