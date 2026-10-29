@@ -20,59 +20,6 @@ class _ShellNavItem {
   });
 }
 
-class HeaderDotsIndicator extends StatelessWidget {
-  final PageController controller;
-  final int count;
-  final int currentIndex;
-
-  const HeaderDotsIndicator({
-    super.key,
-    required this.controller,
-    required this.count,
-    required this.currentIndex,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: controller,
-      builder: (context, _) {
-        double page = currentIndex.toDouble();
-        if (controller.hasClients && controller.position.hasContentDimensions) {
-          page = controller.page ?? currentIndex.toDouble();
-        }
-
-        return Row(
-          mainAxisSize: MainAxisSize.min,
-          children: List.generate(count, (index) {
-            // Jarak continuous page ke index saat swipe
-            final double distance = (page - index).abs().clamp(0.0, 1.0);
-            final double t = 1.0 - distance; // 1.0 saat aktif, 0.0 saat jauh
-
-            // Active pill: lebar 22.0, inactive dot: lebar 6.0
-            final double width = 6.0 + (16.0 * t);
-            final Color color = Color.lerp(
-              Colors.white.withValues(alpha: 0.35),
-              Colors.white,
-              t,
-            )!;
-
-            return Container(
-              margin: const EdgeInsets.symmetric(horizontal: 3),
-              width: width,
-              height: 5.5,
-              decoration: BoxDecoration(
-                color: color,
-                borderRadius: BorderRadius.circular(3),
-              ),
-            );
-          }),
-        );
-      },
-    );
-  }
-}
-
 class MainShell extends StatefulWidget {
   final VoidCallback onLogout;
   final UserModel? user;
@@ -173,75 +120,26 @@ class _MainShellState extends State<MainShell> {
 
     return Scaffold(
       backgroundColor: AppColors.white,
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(74),
-        child: Container(
-          color: AppColors.navy,
-          child: SafeArea(
-            bottom: false,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Baris Atas: Dots Indicator tepat di tengah
-                Padding(
-                  padding: const EdgeInsets.only(top: 8, bottom: 6),
-                  child: Center(
-                    child: HeaderDotsIndicator(
-                      controller: _pageController,
-                      count: _pageTitles.length,
-                      currentIndex: _currentIndex,
-                    ),
-                  ),
-                ),
-
-                // Baris Bawah: Judul halaman rata kiri & logo Boash di kanan
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 2, 20, 10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      AnimatedSwitcher(
-                        duration: const Duration(milliseconds: 200),
-                        transitionBuilder: (child, animation) => FadeTransition(
-                          opacity: animation,
-                          child: child,
-                        ),
-                        child: Text(
-                          _pageTitles[_currentIndex],
-                          key: ValueKey<int>(_currentIndex),
-                          style: const TextStyle(
-                            color: AppColors.white,
-                            fontSize: 22,
-                            fontWeight: FontWeight.w900,
-                            letterSpacing: -0.3,
-                          ),
-                        ),
-                      ),
-                      Container(
-                        width: 32,
-                        height: 32,
-                        padding: const EdgeInsets.all(4),
-                        decoration: BoxDecoration(
-                          color: AppColors.white,
-                          borderRadius: BorderRadius.circular(10),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.15),
-                              blurRadius: 6,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: Image.asset(
-                          'assets/images/boash.png',
-                          fit: BoxFit.contain,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+      appBar: AppBar(
+        backgroundColor: AppColors.navy,
+        foregroundColor: AppColors.white,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        centerTitle: true,
+        title: AnimatedSwitcher(
+          duration: const Duration(milliseconds: 200),
+          transitionBuilder: (child, animation) => FadeTransition(
+            opacity: animation,
+            child: child,
+          ),
+          child: Text(
+            _pageTitles[_currentIndex],
+            key: ValueKey<int>(_currentIndex),
+            style: const TextStyle(
+              color: AppColors.white,
+              fontSize: 19,
+              fontWeight: FontWeight.w800,
+              letterSpacing: 0.2,
             ),
           ),
         ),
