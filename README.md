@@ -2,14 +2,6 @@
 
 Aplikasi portal akademik mahasiswa berbasis Flutter dengan antarmuka modern, sistem autentikasi terintegrasi, pemindaian QR Code presensi perkuliahan, dan penyimpanan sesi lokal.
 
-## About
-
-Boash Academic System (BAS) adalah aplikasi mobile yang dikembangkan untuk memfasilitasi kebutuhan layanan akademik mahasiswa, meliputi akses Kartu Rencana Studi (KRS), Kartu Hasil Studi (KHS), Daftar Hasil Studi (DHS), informasi profil mahasiswa, serta modul presensi perkuliahan berbasis pemindaian QR Code secara realtime.
-
-## Topics
-
-flutter, dart, mobile-app, academic-system, qr-scanner, mobile-scanner, student-portal, shared-preferences, android, material-design-3
-
 ## Fitur Utama
 
 - Autentikasi Mahasiswa: Integrasi login dengan verifikasi kredensial NPM dan kata sandi.
