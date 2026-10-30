@@ -1,0 +1,17 @@
+#!/bin/sh
+# Pre-commit hook: Format & Static Analysis
+
+echo "[pre-commit] Memeriksa format kode Dart..."
+if ! dart format --output=none --set-exit-if-changed lib test; then
+  echo "[pre-commit] Gagal: Kode belum rapi. Silakan jalankan 'dart format .' lalu commit kembali."
+  exit 1
+fi
+
+echo "[pre-commit] Menjalankan flutter analyze..."
+if ! flutter analyze; then
+  echo "[pre-commit] Gagal: Ditemukan error / lint issues. Perbaiki terlebih dahulu sebelum commit."
+  exit 1
+fi
+
+echo "[pre-commit] Pemeriksaan lolos!"
+exit 0

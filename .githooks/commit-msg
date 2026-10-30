@@ -1,0 +1,32 @@
+#!/bin/sh
+# Commit-msg hook: Conventional Commits validator
+
+COMMIT_MSG_FILE=$1
+COMMIT_MSG=$(head -n 1 "$COMMIT_MSG_FILE")
+
+PATTERN="^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\([a-zA-Z0-9_-]+\))?: .{1,80}$"
+
+if echo "$COMMIT_MSG" | grep -qE '^Merge '; then
+  exit 0
+fi
+
+if ! echo "$COMMIT_MSG" | grep -qE "$PATTERN"; then
+  echo "[commit-msg] Gagal: Format pesan commit tidak sesuai Conventional Commits!"
+  echo ""
+  echo "Format yang benar:"
+  echo "  <tipe>(<opsional-scope>): <deskripsi>"
+  echo ""
+  echo "Daftar tipe:"
+  echo "  feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert"
+  echo ""
+  echo "Contoh:"
+  echo "  feat(attendance): tambah scanner QR"
+  echo "  fix(auth): perbaiki session login"
+  echo "  chore: update konfigurasi github"
+  echo ""
+  echo "Pesan Anda saat ini:"
+  echo "  \"$COMMIT_MSG\""
+  exit 1
+fi
+
+exit 0
