@@ -5,16 +5,13 @@ import '../theme/app_theme.dart';
 import 'dhs_screen.dart';
 import 'khs_screen.dart';
 import 'krs_screen.dart';
+import 'presensi_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   final void Function(String title) onOpenMenu;
   final UserModel? user;
 
-  const HomeScreen({
-    super.key,
-    required this.onOpenMenu,
-    this.user,
-  });
+  const HomeScreen({super.key, required this.onOpenMenu, this.user});
 
   static const List<(IconData, String)> _menus = [
     (Icons.assignment_outlined, 'KRS'),
@@ -55,7 +52,9 @@ class HomeScreen extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w700,
-                    color: user!.isStatusAktif ? Colors.green[700] : Colors.red[700],
+                    color: user!.isStatusAktif
+                        ? Colors.green[700]
+                        : Colors.red[700],
                   ),
                 ),
             ],
@@ -78,7 +77,9 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget _studentIdentityCard() {
-    final displayName = user?.nama.isNotEmpty == true ? user!.nama : "Mu'adz Hudzaifah";
+    final displayName = user?.nama.isNotEmpty == true
+        ? user!.nama
+        : "Mu'adz Hudzaifah";
     final displayNpm = user != null ? 'NPM ${user!.userid}' : 'NPM 24903460014';
 
     return Container(
@@ -105,7 +106,10 @@ class HomeScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 3,
+                  ),
                   decoration: BoxDecoration(
                     color: AppColors.white.withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(6),
@@ -200,22 +204,23 @@ class HomeScreen extends StatelessWidget {
           } else if (label == 'KRS') {
             Navigator.push(
               context,
-              MaterialPageRoute(
-                builder: (context) => KrsScreen(user: user),
-              ),
+              MaterialPageRoute(builder: (context) => KrsScreen(user: user)),
             );
           } else if (label == 'KHS') {
             Navigator.push(
               context,
-              MaterialPageRoute(
-                builder: (context) => KhsScreen(user: user),
-              ),
+              MaterialPageRoute(builder: (context) => KhsScreen(user: user)),
             );
           } else if (label == 'DHS') {
             Navigator.push(
               context,
+              MaterialPageRoute(builder: (context) => DhsScreen(user: user)),
+            );
+          } else if (label == 'Presensi') {
+            Navigator.push(
+              context,
               MaterialPageRoute(
-                builder: (context) => DhsScreen(user: user),
+                builder: (context) => PresensiScreen(user: user),
               ),
             );
           } else {
@@ -236,7 +241,9 @@ class HomeScreen extends StatelessWidget {
                 width: 44,
                 height: 44,
                 decoration: BoxDecoration(
-                  color: isEnabled ? AppColors.goldSoft : const Color(0xFFE2E8F0),
+                  color: isEnabled
+                      ? AppColors.goldSoft
+                      : const Color(0xFFE2E8F0),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(

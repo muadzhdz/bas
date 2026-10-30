@@ -38,11 +38,7 @@ class _LoginScreenState extends State<LoginScreen> {
             padding: const EdgeInsets.all(24),
             child: Column(
               mainAxisSize: MainAxisSize.min,
-              children: [
-                _brand(),
-                const SizedBox(height: 28),
-                _formCard(),
-              ],
+              children: [_brand(), const SizedBox(height: 28), _formCard()],
             ),
           ),
         ),
@@ -137,7 +133,9 @@ class _LoginScreenState extends State<LoginScreen> {
               prefixIcon: const Icon(Icons.lock_outline_rounded),
               suffixIcon: IconButton(
                 icon: Icon(
-                  _obscure ? Icons.visibility_outlined : Icons.visibility_off_outlined,
+                  _obscure
+                      ? Icons.visibility_outlined
+                      : Icons.visibility_off_outlined,
                 ),
                 onPressed: () => setState(() => _obscure = !_obscure),
               ),

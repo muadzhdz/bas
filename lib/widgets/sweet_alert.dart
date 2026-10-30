@@ -1,5 +1,7 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
+
 import '../theme/app_theme.dart';
 
 class SweetAlert {
@@ -49,7 +51,10 @@ class SweetAlert {
                   decoration: BoxDecoration(
                     color: const Color(0xFFDCFCE7),
                     shape: BoxShape.circle,
-                    border: Border.all(color: const Color(0xFF86EFAC), width: 3),
+                    border: Border.all(
+                      color: const Color(0xFF86EFAC),
+                      width: 3,
+                    ),
                   ),
                   child: const Center(
                     child: Icon(
@@ -86,6 +91,99 @@ class SweetAlert {
       },
     );
     timer?.cancel();
+  }
+
+  // Menampilkan modal error bergaya SweetAlert2 dengan tombol aksi
+  static Future<void> error({
+    required BuildContext context,
+    required String title,
+    required String message,
+    String buttonText = 'Coba Lagi',
+  }) async {
+    await showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (dialogContext) {
+        return Dialog(
+          backgroundColor: Colors.transparent,
+          insetPadding: const EdgeInsets.symmetric(horizontal: 32),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 26),
+            decoration: BoxDecoration(
+              color: AppColors.white,
+              borderRadius: BorderRadius.circular(24),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.15),
+                  blurRadius: 28,
+                  offset: const Offset(0, 10),
+                ),
+              ],
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 72,
+                  height: 72,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFFEE2E2),
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: const Color(0xFFFCA5A5),
+                      width: 3,
+                    ),
+                  ),
+                  child: const Center(
+                    child: Icon(
+                      Icons.close_rounded,
+                      color: AppColors.danger,
+                      size: 42,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 18),
+                Text(
+                  title,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w900,
+                    color: AppColors.ink,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  message,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 13,
+                    height: 1.4,
+                    color: AppColors.muted,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                FilledButton(
+                  onPressed: () => Navigator.pop(dialogContext),
+                  style: FilledButton.styleFrom(
+                    backgroundColor: AppColors.navy,
+                    foregroundColor: AppColors.white,
+                    minimumSize: const Size.fromHeight(44),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: Text(
+                    buttonText,
+                    style: const TextStyle(fontWeight: FontWeight.w700),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   // Menampilkan modal konfirmasi bergaya SweetAlert2 (misal untuk Logout)
@@ -127,7 +225,10 @@ class SweetAlert {
                   decoration: BoxDecoration(
                     color: const Color(0xFFFEF3C7),
                     shape: BoxShape.circle,
-                    border: Border.all(color: const Color(0xFFFDE68A), width: 3),
+                    border: Border.all(
+                      color: const Color(0xFFFDE68A),
+                      width: 3,
+                    ),
                   ),
                   child: const Center(
                     child: Icon(
@@ -182,7 +283,9 @@ class SweetAlert {
                       child: FilledButton(
                         onPressed: () => Navigator.pop(dialogContext, true),
                         style: FilledButton.styleFrom(
-                          backgroundColor: isDestructive ? AppColors.danger : AppColors.navy,
+                          backgroundColor: isDestructive
+                              ? AppColors.danger
+                              : AppColors.navy,
                           foregroundColor: AppColors.white,
                           padding: const EdgeInsets.symmetric(vertical: 13),
                           shape: RoundedRectangleBorder(

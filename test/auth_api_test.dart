@@ -38,29 +38,32 @@ void main() {
       expect(user.isUjianAktif, true);
     });
 
-    test('UserModel handles disabled flags (status: 0, babsen: 0, bperwalian: 0)', () {
-      final json = {
-        'id_users': '2',
-        'userid': 12523031,
-        'nama': 'Nonaktif User',
-        'login_name': 'nonaktif',
-        'pass': 'pass',
-        'pass_sha1': 'abc',
-        'roleid': 10,
-        'status': 0,
-        'aktif': 0,
-        'babsen': 0,
-        'bperwalian': 0,
-        'bujian': 0,
-      };
+    test(
+      'UserModel handles disabled flags (status: 0, babsen: 0, bperwalian: 0)',
+      () {
+        final json = {
+          'id_users': '2',
+          'userid': 12523031,
+          'nama': 'Nonaktif User',
+          'login_name': 'nonaktif',
+          'pass': 'pass',
+          'pass_sha1': 'abc',
+          'roleid': 10,
+          'status': 0,
+          'aktif': 0,
+          'babsen': 0,
+          'bperwalian': 0,
+          'bujian': 0,
+        };
 
-      final user = UserModel.fromJson(json);
+        final user = UserModel.fromJson(json);
 
-      expect(user.isRoleMahasiswa, false);
-      expect(user.isStatusAktif, false);
-      expect(user.isAbsenAktif, false);
-      expect(user.isKrsAktif, false);
-    });
+        expect(user.isRoleMahasiswa, false);
+        expect(user.isStatusAktif, false);
+        expect(user.isAbsenAktif, false);
+        expect(user.isKrsAktif, false);
+      },
+    );
 
     test('Live MockAPI fetch and verify login for user 12523030', () async {
       final result = await authApi.verifyLogin(

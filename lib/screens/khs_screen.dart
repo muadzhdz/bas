@@ -80,7 +80,10 @@ class _KhsScreenState extends State<KhsScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 6,
+                    ),
                     decoration: BoxDecoration(
                       color: AppColors.navy,
                       borderRadius: BorderRadius.circular(8),
@@ -151,11 +154,31 @@ class _KhsScreenState extends State<KhsScreen> {
                 ),
               ),
               const SizedBox(height: 12),
-              _buildComponentRow('Presensi / Kehadiran', '${nilai.hadir}%', nilai.naHadir),
-              _buildComponentRow('Tugas Mandiri', nilai.tugas.toString(), nilai.naTugas),
-              _buildComponentRow('Kuis Perkuliahan', nilai.quis.toString(), nilai.naQuis),
-              _buildComponentRow('Ujian Tengah Semester (UTS)', nilai.uts.toString(), nilai.naUts),
-              _buildComponentRow('Ujian Akhir Semester (UAS)', nilai.uas.toString(), nilai.naUas),
+              _buildComponentRow(
+                'Presensi / Kehadiran',
+                '${nilai.hadir}%',
+                nilai.naHadir,
+              ),
+              _buildComponentRow(
+                'Tugas Mandiri',
+                nilai.tugas.toString(),
+                nilai.naTugas,
+              ),
+              _buildComponentRow(
+                'Kuis Perkuliahan',
+                nilai.quis.toString(),
+                nilai.naQuis,
+              ),
+              _buildComponentRow(
+                'Ujian Tengah Semester (UTS)',
+                nilai.uts.toString(),
+                nilai.naUts,
+              ),
+              _buildComponentRow(
+                'Ujian Akhir Semester (UAS)',
+                nilai.uas.toString(),
+                nilai.naUas,
+              ),
               const SizedBox(height: 14),
               Container(
                 padding: const EdgeInsets.all(12),
@@ -212,7 +235,11 @@ class _KhsScreenState extends State<KhsScreen> {
           ),
           Text(
             rawValue,
-            style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.ink),
+            style: const TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+              color: AppColors.ink,
+            ),
           ),
           const SizedBox(width: 24),
           SizedBox(
@@ -267,7 +294,11 @@ class _KhsScreenState extends State<KhsScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(Icons.error_outline_rounded, color: AppColors.danger, size: 48),
+              const Icon(
+                Icons.error_outline_rounded,
+                color: AppColors.danger,
+                size: 48,
+              ),
               const SizedBox(height: 12),
               Text(
                 _errorMessage!,
@@ -300,7 +331,9 @@ class _KhsScreenState extends State<KhsScreen> {
       );
     }
 
-    final studentName = widget.user?.nama.isNotEmpty == true ? widget.user!.nama : 'Sofi Arianti';
+    final studentName = widget.user?.nama.isNotEmpty == true
+        ? widget.user!.nama
+        : 'Sofi Arianti';
     final studentNpm = widget.user?.userid.toString() ?? '12523030';
 
     return RefreshIndicator(
@@ -348,7 +381,9 @@ class _KhsScreenState extends State<KhsScreen> {
                 ..hideCurrentSnackBar()
                 ..showSnackBar(
                   const SnackBar(
-                    content: Text('Mengunduh KHS Semester 1 dalam format PDF...'),
+                    content: Text(
+                      'Mengunduh KHS Semester 1 dalam format PDF...',
+                    ),
                     duration: Duration(milliseconds: 1400),
                     behavior: SnackBarBehavior.floating,
                   ),
@@ -428,11 +463,16 @@ class _KhsScreenState extends State<KhsScreen> {
                 ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 8,
+                ),
                 decoration: BoxDecoration(
                   color: AppColors.white.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(14),
-                  border: Border.all(color: AppColors.gold.withValues(alpha: 0.5)),
+                  border: Border.all(
+                    color: AppColors.gold.withValues(alpha: 0.5),
+                  ),
                 ),
                 child: Column(
                   children: [
@@ -467,7 +507,10 @@ class _KhsScreenState extends State<KhsScreen> {
             children: [
               _buildMetricItem('Total SKS', '${summary.totalSks} SKS'),
               Container(width: 1, height: 26, color: const Color(0xFF1E3A5F)),
-              _buildMetricItem('Total Mutu', summary.totalMutu.toStringAsFixed(1)),
+              _buildMetricItem(
+                'Total Mutu',
+                summary.totalMutu.toStringAsFixed(1),
+              ),
               Container(width: 1, height: 26, color: const Color(0xFF1E3A5F)),
               _buildMetricItem('Status', 'Sangat Baik'),
             ],
@@ -541,7 +584,10 @@ class _KhsScreenState extends State<KhsScreen> {
                       Row(
                         children: [
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 6,
+                              vertical: 2,
+                            ),
                             decoration: BoxDecoration(
                               color: AppColors.offWhite,
                               borderRadius: BorderRadius.circular(6),
@@ -579,7 +625,10 @@ class _KhsScreenState extends State<KhsScreen> {
                       const SizedBox(height: 2),
                       Text(
                         'Nilai Akhir: ${nilai.na} • Bobot: ${nilai.am}',
-                        style: const TextStyle(fontSize: 12, color: AppColors.muted),
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: AppColors.muted,
+                        ),
                       ),
                     ],
                   ),

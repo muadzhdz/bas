@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../api/auth_api.dart';
 import '../screens/main_shell.dart';
+import '../services/session_service.dart';
 import '../theme/app_theme.dart';
 
 class AuthPage extends StatefulWidget {
@@ -41,19 +42,25 @@ class _AuthPageState extends State<AuthPage> {
     if (!mounted) return;
 
     if (result.isSuccess && result.user != null) {
+      // Simpan session user ke lokal storage perangkat
+      await SessionService.saveUser(result.user!);
+      if (!mounted) return;
+
       // Langsung beralih ke Beranda tanpa alert popup
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
           builder: (context) => MainShell(
             user: result.user,
-            onLogout: () {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const AuthPage(),
-                ),
-              );
+            onLogout: () async {
+              await SessionService.clearUser();
+              if (context.mounted) {
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => const AuthPage()),
+                  (route) => false,
+                );
+              }
             },
           ),
         ),
@@ -131,10 +138,7 @@ class _AuthPageState extends State<AuthPage> {
               ),
             ],
           ),
-          child: Image.asset(
-            'assets/images/boash.png',
-            fit: BoxFit.contain,
-          ),
+          child: Image.asset('assets/images/boash.png', fit: BoxFit.contain),
         ),
         const SizedBox(height: 18),
         const Text(
@@ -159,10 +163,7 @@ class _AuthPageState extends State<AuthPage> {
         const Text(
           'Silakan masuk menggunakan NPM dan kata sandi Anda',
           textAlign: TextAlign.center,
-          style: TextStyle(
-            fontSize: 13,
-            color: AppColors.muted,
-          ),
+          style: TextStyle(fontSize: 13, color: AppColors.muted),
         ),
       ],
     );
@@ -201,12 +202,19 @@ class _AuthPageState extends State<AuthPage> {
             keyboardType: TextInputType.number,
             style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
             decoration: InputDecoration(
-              prefixIcon: const Icon(Icons.badge_outlined, color: AppColors.navy, size: 20),
+              prefixIcon: const Icon(
+                Icons.badge_outlined,
+                color: AppColors.navy,
+                size: 20,
+              ),
               hintText: 'Masukkan NPM (contoh: 12523030)',
               hintStyle: const TextStyle(fontSize: 13, color: AppColors.muted),
               filled: true,
               fillColor: AppColors.white,
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 14,
+              ),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
                 borderSide: const BorderSide(color: AppColors.border),
@@ -238,20 +246,30 @@ class _AuthPageState extends State<AuthPage> {
             obscureText: _isPasswordObscured,
             style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
             decoration: InputDecoration(
-              prefixIcon: const Icon(Icons.lock_outline_rounded, color: AppColors.navy, size: 20),
+              prefixIcon: const Icon(
+                Icons.lock_outline_rounded,
+                color: AppColors.navy,
+                size: 20,
+              ),
               suffixIcon: IconButton(
                 icon: Icon(
-                  _isPasswordObscured ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+                  _isPasswordObscured
+                      ? Icons.visibility_off_outlined
+                      : Icons.visibility_outlined,
                   color: AppColors.muted,
                   size: 20,
                 ),
-                onPressed: () => setState(() => _isPasswordObscured = !_isPasswordObscured),
+                onPressed: () =>
+                    setState(() => _isPasswordObscured = !_isPasswordObscured),
               ),
               hintText: 'Masukkan Password',
               hintStyle: const TextStyle(fontSize: 13, color: AppColors.muted),
               filled: true,
               fillColor: AppColors.white,
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 14,
+              ),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
                 borderSide: const BorderSide(color: AppColors.border),
@@ -310,7 +328,11 @@ class _AuthPageState extends State<AuthPage> {
       ),
       child: Row(
         children: [
-          const Icon(Icons.error_outline_rounded, color: AppColors.danger, size: 22),
+          const Icon(
+            Icons.error_outline_rounded,
+            color: AppColors.danger,
+            size: 22,
+          ),
           const SizedBox(width: 10),
           Expanded(
             child: Text(

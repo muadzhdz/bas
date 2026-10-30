@@ -99,7 +99,9 @@ class FloatingPillNavBar extends StatelessWidget {
                       clipBehavior: Clip.none,
                       children: [
                         Icon(
-                          isActive ? (item.selectedIcon ?? item.icon) : item.icon,
+                          isActive
+                              ? (item.selectedIcon ?? item.icon)
+                              : item.icon,
                           size: 22 * s,
                           color: isActive ? onActiveColor : inactiveColor,
                         ),
@@ -121,7 +123,9 @@ class FloatingPillNavBar extends StatelessWidget {
                                 minHeight: 15 * s,
                               ),
                               child: Text(
-                                item.badgeCount > 9 ? '9+' : '${item.badgeCount}',
+                                item.badgeCount > 9
+                                    ? '9+'
+                                    : '${item.badgeCount}',
                                 style: TextStyle(
                                   color: AppColors.navyDark,
                                   fontSize: 9.5 * s,

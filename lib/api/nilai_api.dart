@@ -1,9 +1,12 @@
 import 'dart:convert';
+
 import 'package:http/http.dart' as http;
+
 import '../models/nilai_model.dart';
 
 class NilaiApi {
-  static const String baseUrl = 'https://6adab9277512f497b30020ef.mockapi.io/nilai';
+  static const String baseUrl =
+      'https://6adab9277512f497b30020ef.mockapi.io/nilai';
 
   // Mengambil daftar nilai mahasiswa berdasarkan NPM
   Future<List<NilaiModel>> fetchNilaiByNpm(String npm) async {

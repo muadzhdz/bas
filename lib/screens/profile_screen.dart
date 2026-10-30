@@ -8,11 +8,7 @@ class ProfileScreen extends StatelessWidget {
   final VoidCallback onLogout;
   final UserModel? user;
 
-  const ProfileScreen({
-    super.key,
-    required this.onLogout,
-    this.user,
-  });
+  const ProfileScreen({super.key, required this.onLogout, this.user});
 
   @override
   Widget build(BuildContext context) {
@@ -57,10 +53,14 @@ class ProfileScreen extends StatelessWidget {
   }
 
   Widget _identityCard() {
-    final displayName = user?.nama.isNotEmpty == true ? user!.nama : "Mu'adz Hudzaifah";
+    final displayName = user?.nama.isNotEmpty == true
+        ? user!.nama
+        : "Mu'adz Hudzaifah";
     final displayNpm = user != null ? 'NPM ${user!.userid}' : 'NPM 24903460014';
     final roleText = user != null
-        ? (user!.isRoleMahasiswa ? 'Mahasiswa (Role 14)' : 'Role ${user!.roleid}')
+        ? (user!.isRoleMahasiswa
+              ? 'Mahasiswa (Role 14)'
+              : 'Role ${user!.roleid}')
         : 'Teknologi Rekayasa Multimedia';
 
     return Container(
@@ -105,7 +105,10 @@ class ProfileScreen extends StatelessWidget {
                 const SizedBox(height: 2),
                 Text(
                   roleText,
-                  style: const TextStyle(color: Color(0xFF9FB0C9), fontSize: 13),
+                  style: const TextStyle(
+                    color: Color(0xFF9FB0C9),
+                    fontSize: 13,
+                  ),
                 ),
               ],
             ),
@@ -172,11 +175,19 @@ class ProfileScreen extends StatelessWidget {
   }
 
   Widget _detailsCard() {
-    final email = user != null ? '${user!.userid}@boash.ac.id' : 'muadzhdz@boash.ac.id';
-    final statusAkun = (user?.isStatusAktif ?? true) ? 'Aktif (1)' : 'Disable (0)';
+    final email = user != null
+        ? '${user!.userid}@boash.ac.id'
+        : 'muadzhdz@boash.ac.id';
+    final statusAkun = (user?.isStatusAktif ?? true)
+        ? 'Aktif (1)'
+        : 'Disable (0)';
     final statusKrs = (user?.isKrsAktif ?? true) ? 'Aktif (1)' : 'Disable (0)';
-    final statusAbsen = (user?.isAbsenAktif ?? true) ? 'Aktif (1)' : 'Disable (0)';
-    final statusUjian = (user?.isUjianAktif ?? true) ? 'Aktif (1)' : 'Disable (0)';
+    final statusAbsen = (user?.isAbsenAktif ?? true)
+        ? 'Aktif (1)'
+        : 'Disable (0)';
+    final statusUjian = (user?.isUjianAktif ?? true)
+        ? 'Aktif (1)'
+        : 'Disable (0)';
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 6),
@@ -188,12 +199,36 @@ class ProfileScreen extends StatelessWidget {
       child: Column(
         children: [
           _DetailRow(icon: Icons.email_outlined, label: 'Email', value: email),
-          const _DetailRow(icon: Icons.phone_outlined, label: 'Telepon', value: '085694718914'),
-          const _DetailRow(icon: Icons.calendar_today_outlined, label: 'Angkatan', value: '2024'),
-          _DetailRow(icon: Icons.badge_outlined, label: 'Status Akun', value: statusAkun),
-          _DetailRow(icon: Icons.assignment_outlined, label: 'Status KRS', value: statusKrs),
-          _DetailRow(icon: Icons.how_to_reg_outlined, label: 'Status Absen', value: statusAbsen),
-          _DetailRow(icon: Icons.description_outlined, label: 'Status Ujian', value: statusUjian),
+          const _DetailRow(
+            icon: Icons.phone_outlined,
+            label: 'Telepon',
+            value: '085694718914',
+          ),
+          const _DetailRow(
+            icon: Icons.calendar_today_outlined,
+            label: 'Angkatan',
+            value: '2024',
+          ),
+          _DetailRow(
+            icon: Icons.badge_outlined,
+            label: 'Status Akun',
+            value: statusAkun,
+          ),
+          _DetailRow(
+            icon: Icons.assignment_outlined,
+            label: 'Status KRS',
+            value: statusKrs,
+          ),
+          _DetailRow(
+            icon: Icons.how_to_reg_outlined,
+            label: 'Status Absen',
+            value: statusAbsen,
+          ),
+          _DetailRow(
+            icon: Icons.description_outlined,
+            label: 'Status Ujian',
+            value: statusUjian,
+          ),
         ],
       ),
     );

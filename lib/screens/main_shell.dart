@@ -24,11 +24,7 @@ class MainShell extends StatefulWidget {
   final VoidCallback onLogout;
   final UserModel? user;
 
-  const MainShell({
-    super.key,
-    required this.onLogout,
-    this.user,
-  });
+  const MainShell({super.key, required this.onLogout, this.user});
 
   @override
   State<MainShell> createState() => _MainShellState();
@@ -106,16 +102,10 @@ class _MainShellState extends State<MainShell> {
   @override
   Widget build(BuildContext context) {
     final List<Widget> screens = [
-      HomeScreen(
-        user: widget.user,
-        onOpenMenu: _showComingSoon,
-      ),
+      HomeScreen(user: widget.user, onOpenMenu: _showComingSoon),
       const InfoScreen(),
       const NewsScreen(),
-      ProfileScreen(
-        user: widget.user,
-        onLogout: widget.onLogout,
-      ),
+      ProfileScreen(user: widget.user, onLogout: widget.onLogout),
     ];
 
     return Scaffold(
@@ -128,10 +118,8 @@ class _MainShellState extends State<MainShell> {
         centerTitle: true,
         title: AnimatedSwitcher(
           duration: const Duration(milliseconds: 200),
-          transitionBuilder: (child, animation) => FadeTransition(
-            opacity: animation,
-            child: child,
-          ),
+          transitionBuilder: (child, animation) =>
+              FadeTransition(opacity: animation, child: child),
           child: Text(
             _pageTitles[_currentIndex],
             key: ValueKey<int>(_currentIndex),
@@ -154,9 +142,7 @@ class _MainShellState extends State<MainShell> {
       bottomNavigationBar: Container(
         decoration: const BoxDecoration(
           color: AppColors.white,
-          border: Border(
-            top: BorderSide(color: AppColors.border, width: 1.0),
-          ),
+          border: Border(top: BorderSide(color: AppColors.border, width: 1.0)),
           boxShadow: [
             BoxShadow(
               color: Color(0x0A000000),
@@ -199,7 +185,9 @@ class _MainShellState extends State<MainShell> {
                             child: Icon(
                               iconData,
                               size: 22,
-                              color: isSelected ? AppColors.navy : AppColors.muted,
+                              color: isSelected
+                                  ? AppColors.navy
+                                  : AppColors.muted,
                             ),
                           ),
                         ),
@@ -208,8 +196,12 @@ class _MainShellState extends State<MainShell> {
                           item.label,
                           style: TextStyle(
                             fontSize: 12,
-                            fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                            color: isSelected ? AppColors.navy : AppColors.muted,
+                            fontWeight: isSelected
+                                ? FontWeight.w700
+                                : FontWeight.w500,
+                            color: isSelected
+                                ? AppColors.navy
+                                : AppColors.muted,
                             height: 1.1,
                           ),
                         ),

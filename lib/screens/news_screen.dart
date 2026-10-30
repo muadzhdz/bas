@@ -38,11 +38,7 @@ class NewsScreen extends StatelessWidget {
         separatorBuilder: (_, _) => const SizedBox(height: 12),
         itemBuilder: (context, index) {
           final item = _news[index];
-          return _NewsCard(
-            title: item.$1,
-            body: item.$2,
-            scope: item.$3,
-          );
+          return _NewsCard(title: item.$1, body: item.$2, scope: item.$3);
         },
       ),
     );

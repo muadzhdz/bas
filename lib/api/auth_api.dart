@@ -1,6 +1,8 @@
 import 'dart:convert';
+
 import 'package:crypto/crypto.dart';
 import 'package:http/http.dart' as http;
+
 import '../models/user_model.dart';
 
 class LoginResult {
@@ -14,7 +16,10 @@ class LoginResult {
     this.user,
   });
 
-  factory LoginResult.success({required String message, required UserModel user}) {
+  factory LoginResult.success({
+    required String message,
+    required UserModel user,
+  }) {
     return LoginResult(isSuccess: true, message: message, user: user);
   }
 
@@ -24,7 +29,8 @@ class LoginResult {
 }
 
 class AuthApi {
-  static const String endpoint = 'https://6adab9277512f497b30020ef.mockapi.io/user';
+  static const String endpoint =
+      'https://6adab9277512f497b30020ef.mockapi.io/user';
 
   // Mengubah plain text password menjadi SHA-1 hash hex string
   String hashSha1(String input) {
@@ -86,12 +92,16 @@ class AuthApi {
 
           // 1. Verifikasi roleid: wajib bernilai 14 (Mahasiswa)
           if (user.roleid != 14) {
-            return LoginResult.failure('Role ID tidak diizinkan (Role saat ini: ${user.roleid}, harus 14).');
+            return LoginResult.failure(
+              'Role ID tidak diizinkan (Role saat ini: ${user.roleid}, harus 14).',
+            );
           }
 
           // 2. Verifikasi status akun: jika 1 aktif, jika 0 disable
           if (user.status == 0 || user.aktif == 0) {
-            return LoginResult.failure('Status akun nonaktif (status: ${user.status}, aktif: ${user.aktif}). Hubungi admin.');
+            return LoginResult.failure(
+              'Status akun nonaktif (status: ${user.status}, aktif: ${user.aktif}). Hubungi admin.',
+            );
           }
 
           // 3. Verifikasi sukses

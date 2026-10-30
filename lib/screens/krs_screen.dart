@@ -9,18 +9,62 @@ class KrsScreen extends StatelessWidget {
   const KrsScreen({super.key, this.user});
 
   static const List<(String, String, int, String, String)> _krsCourses = [
-    ('GC330', 'Pemrograman Berorientasi Objek', 3, 'LU0512', 'Senin, 08:00 - 10:30 (R. Lab 1)'),
-    ('GC331', 'Animasi & Pemodelan 3D', 3, 'AT2047', 'Selasa, 10:00 - 12:30 (R. Lab Studio)'),
-    ('GC332', 'Rekayasa Multimedia Terapan', 3, 'RM0311', 'Rabu, 13:00 - 15:30 (R. 302)'),
-    ('GC333', 'Jaringan Komputer & Cloud', 3, 'NW0124', 'Kamis, 08:00 - 10:30 (R. Lab Net)'),
-    ('GC334', 'Desain Pengalaman Pengguna (UI/UX)', 3, 'UX0981', 'Jumat, 09:00 - 11:30 (R. 204)'),
-    ('GC335', 'Pemrograman Web Lanjut', 3, 'WB0452', 'Kamis, 13:30 - 16:00 (R. Lab 2)'),
-    ('GC336', 'Etika Profesi & Komunikasi', 2, 'ET0219', 'Rabu, 10:00 - 11:40 (R. 101)'),
+    (
+      'GC330',
+      'Pemrograman Berorientasi Objek',
+      3,
+      'LU0512',
+      'Senin, 08:00 - 10:30 (R. Lab 1)',
+    ),
+    (
+      'GC331',
+      'Animasi & Pemodelan 3D',
+      3,
+      'AT2047',
+      'Selasa, 10:00 - 12:30 (R. Lab Studio)',
+    ),
+    (
+      'GC332',
+      'Rekayasa Multimedia Terapan',
+      3,
+      'RM0311',
+      'Rabu, 13:00 - 15:30 (R. 302)',
+    ),
+    (
+      'GC333',
+      'Jaringan Komputer & Cloud',
+      3,
+      'NW0124',
+      'Kamis, 08:00 - 10:30 (R. Lab Net)',
+    ),
+    (
+      'GC334',
+      'Desain Pengalaman Pengguna (UI/UX)',
+      3,
+      'UX0981',
+      'Jumat, 09:00 - 11:30 (R. 204)',
+    ),
+    (
+      'GC335',
+      'Pemrograman Web Lanjut',
+      3,
+      'WB0452',
+      'Kamis, 13:30 - 16:00 (R. Lab 2)',
+    ),
+    (
+      'GC336',
+      'Etika Profesi & Komunikasi',
+      2,
+      'ET0219',
+      'Rabu, 10:00 - 11:40 (R. 101)',
+    ),
   ];
 
   @override
   Widget build(BuildContext context) {
-    final studentName = user?.nama.isNotEmpty == true ? user!.nama : 'Sofi Arianti';
+    final studentName = user?.nama.isNotEmpty == true
+        ? user!.nama
+        : 'Sofi Arianti';
     final studentNpm = user != null ? user!.userid.toString() : '12523030';
     final totalSks = _krsCourses.fold(0, (sum, item) => sum + item.$3);
 
@@ -66,7 +110,10 @@ class KrsScreen extends StatelessWidget {
                 ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 4,
+                ),
                 decoration: BoxDecoration(
                   color: AppColors.goldSoft,
                   borderRadius: BorderRadius.circular(8),
@@ -141,7 +188,10 @@ class KrsScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 5,
+                ),
                 decoration: BoxDecoration(
                   color: const Color(0xFF16A34A).withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(8),
@@ -149,7 +199,11 @@ class KrsScreen extends StatelessWidget {
                 ),
                 child: Row(
                   children: const [
-                    Icon(Icons.verified_rounded, color: Color(0xFF4ADE80), size: 14),
+                    Icon(
+                      Icons.verified_rounded,
+                      color: Color(0xFF4ADE80),
+                      size: 14,
+                    ),
                     SizedBox(width: 6),
                     Text(
                       'Disetujui Dosen Wali',
@@ -184,10 +238,7 @@ class KrsScreen extends StatelessWidget {
           const SizedBox(height: 2),
           Text(
             'NPM $npm • Teknologi Rekayasa Multimedia',
-            style: const TextStyle(
-              fontSize: 12,
-              color: Color(0xFF9FB0C9),
-            ),
+            style: const TextStyle(fontSize: 12, color: Color(0xFF9FB0C9)),
           ),
           const SizedBox(height: 16),
           const Divider(color: Color(0xFF1E3A5F)),
@@ -269,12 +320,19 @@ class KrsScreen extends StatelessWidget {
                 const SizedBox(height: 4),
                 Row(
                   children: [
-                    const Icon(Icons.schedule_rounded, size: 13, color: AppColors.muted),
+                    const Icon(
+                      Icons.schedule_rounded,
+                      size: 13,
+                      color: AppColors.muted,
+                    ),
                     const SizedBox(width: 4),
                     Expanded(
                       child: Text(
                         course.$5,
-                        style: const TextStyle(fontSize: 11, color: AppColors.muted),
+                        style: const TextStyle(
+                          fontSize: 11,
+                          color: AppColors.muted,
+                        ),
                       ),
                     ),
                   ],

@@ -4,8 +4,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:bas/main.dart';
 
 void main() {
-  testWidgets('AuthPage menampilkan field NPM, Password dan tombol Login',
-      (WidgetTester tester) async {
+  testWidgets('AuthPage menampilkan field NPM, Password dan tombol Login', (
+    WidgetTester tester,
+  ) async {
     await tester.pumpWidget(const MyApp());
     await tester.pump();
 

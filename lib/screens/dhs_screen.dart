@@ -99,7 +99,11 @@ class _DhsScreenState extends State<DhsScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(Icons.error_outline_rounded, color: AppColors.danger, size: 48),
+              const Icon(
+                Icons.error_outline_rounded,
+                color: AppColors.danger,
+                size: 48,
+              ),
               const SizedBox(height: 12),
               Text(_errorMessage!, style: const TextStyle(fontSize: 14)),
               const SizedBox(height: 16),
@@ -120,12 +124,12 @@ class _DhsScreenState extends State<DhsScreen> {
 
     final summary = _summary;
     if (summary == null || summary.daftarNilai.isEmpty) {
-      return const Center(
-        child: Text('Data transkrip nilai belum tersedia.'),
-      );
+      return const Center(child: Text('Data transkrip nilai belum tersedia.'));
     }
 
-    final studentName = widget.user?.nama.isNotEmpty == true ? widget.user!.nama : 'Sofi Arianti';
+    final studentName = widget.user?.nama.isNotEmpty == true
+        ? widget.user!.nama
+        : 'Sofi Arianti';
     final studentNpm = widget.user?.userid.toString() ?? '12523030';
 
     return SingleChildScrollView(
@@ -146,13 +150,18 @@ class _DhsScreenState extends State<DhsScreen> {
                       ..hideCurrentSnackBar()
                       ..showSnackBar(
                         const SnackBar(
-                          content: Text('Transkrip DHS (PDF) berhasil diunduh.'),
+                          content: Text(
+                            'Transkrip DHS (PDF) berhasil diunduh.',
+                          ),
                           duration: Duration(milliseconds: 1400),
                           behavior: SnackBarBehavior.floating,
                         ),
                       );
                   },
-                  icon: const Icon(Icons.download_rounded, color: AppColors.navyDark),
+                  icon: const Icon(
+                    Icons.download_rounded,
+                    color: AppColors.navyDark,
+                  ),
                   label: const Text('Unduh Transkrip PDF'),
                   style: FilledButton.styleFrom(
                     backgroundColor: AppColors.gold,
@@ -304,10 +313,7 @@ class _DhsScreenState extends State<DhsScreen> {
               SizedBox(height: 2),
               Text(
                 'Jl. Boash No. 1, Bogor Barat • Akreditasi BAN-PT: Unggul',
-                style: TextStyle(
-                  fontSize: 10,
-                  color: AppColors.muted,
-                ),
+                style: TextStyle(fontSize: 10, color: AppColors.muted),
               ),
             ],
           ),
@@ -329,21 +335,38 @@ class _DhsScreenState extends State<DhsScreen> {
           Row(
             children: [
               Expanded(child: _buildInfoItem('Nama Mahasiswa', name)),
-              Expanded(child: _buildInfoItem('Program Studi', 'Teknologi Rekayasa Multimedia')),
+              Expanded(
+                child: _buildInfoItem(
+                  'Program Studi',
+                  'Teknologi Rekayasa Multimedia',
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 8),
           Row(
             children: [
               Expanded(child: _buildInfoItem('Nomor Pokok (NPM)', npm)),
-              Expanded(child: _buildInfoItem('Jenjang Pendidikan', 'Sarjana Terapan (S1 / D4)')),
+              Expanded(
+                child: _buildInfoItem(
+                  'Jenjang Pendidikan',
+                  'Sarjana Terapan (S1 / D4)',
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 8),
           Row(
             children: [
-              Expanded(child: _buildInfoItem('Tahun Masuk / Angkatan', '2023 / 2024')),
-              Expanded(child: _buildInfoItem('Status Registrasi', 'Aktif (Terdaftar PDDikti)')),
+              Expanded(
+                child: _buildInfoItem('Tahun Masuk / Angkatan', '2023 / 2024'),
+              ),
+              Expanded(
+                child: _buildInfoItem(
+                  'Status Registrasi',
+                  'Aktif (Terdaftar PDDikti)',
+                ),
+              ),
             ],
           ),
         ],
@@ -386,30 +409,84 @@ class _DhsScreenState extends State<DhsScreen> {
             children: const [
               SizedBox(
                 width: 26,
-                child: Text('No', style: TextStyle(color: AppColors.white, fontSize: 10, fontWeight: FontWeight.bold), textAlign: TextAlign.center),
+                child: Text(
+                  'No',
+                  style: TextStyle(
+                    color: AppColors.white,
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
               ),
               SizedBox(
                 width: 50,
-                child: Text('Kode', style: TextStyle(color: AppColors.white, fontSize: 10, fontWeight: FontWeight.bold)),
+                child: Text(
+                  'Kode',
+                  style: TextStyle(
+                    color: AppColors.white,
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
               Expanded(
-                child: Text('Mata Kuliah', style: TextStyle(color: AppColors.white, fontSize: 10, fontWeight: FontWeight.bold)),
+                child: Text(
+                  'Mata Kuliah',
+                  style: TextStyle(
+                    color: AppColors.white,
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
               SizedBox(
                 width: 32,
-                child: Text('SKS', style: TextStyle(color: AppColors.white, fontSize: 10, fontWeight: FontWeight.bold), textAlign: TextAlign.center),
+                child: Text(
+                  'SKS',
+                  style: TextStyle(
+                    color: AppColors.white,
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
               ),
               SizedBox(
                 width: 32,
-                child: Text('HM', style: TextStyle(color: AppColors.white, fontSize: 10, fontWeight: FontWeight.bold), textAlign: TextAlign.center),
+                child: Text(
+                  'HM',
+                  style: TextStyle(
+                    color: AppColors.white,
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
               ),
               SizedBox(
                 width: 32,
-                child: Text('AM', style: TextStyle(color: AppColors.white, fontSize: 10, fontWeight: FontWeight.bold), textAlign: TextAlign.center),
+                child: Text(
+                  'AM',
+                  style: TextStyle(
+                    color: AppColors.white,
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
               ),
               SizedBox(
                 width: 38,
-                child: Text('Mutu', style: TextStyle(color: AppColors.white, fontSize: 10, fontWeight: FontWeight.bold), textAlign: TextAlign.end),
+                child: Text(
+                  'Mutu',
+                  style: TextStyle(
+                    color: AppColors.white,
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.end,
+                ),
               ),
             ],
           ),
@@ -431,30 +508,77 @@ class _DhsScreenState extends State<DhsScreen> {
               children: [
                 SizedBox(
                   width: 26,
-                  child: Text('${i + 1}', style: const TextStyle(fontSize: 10, color: AppColors.muted), textAlign: TextAlign.center),
+                  child: Text(
+                    '${i + 1}',
+                    style: const TextStyle(
+                      fontSize: 10,
+                      color: AppColors.muted,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
                 ),
                 SizedBox(
                   width: 50,
-                  child: Text(list[i].kdMatkul, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: AppColors.navy)),
+                  child: Text(
+                    list[i].kdMatkul,
+                    style: const TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.navy,
+                    ),
+                  ),
                 ),
                 Expanded(
-                  child: Text(list[i].namaMatkul, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: AppColors.ink)),
+                  child: Text(
+                    list[i].namaMatkul,
+                    style: const TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.ink,
+                    ),
+                  ),
                 ),
                 SizedBox(
                   width: 32,
-                  child: Text('${list[i].sks}', style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700), textAlign: TextAlign.center),
+                  child: Text(
+                    '${list[i].sks}',
+                    style: const TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w700,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
                 ),
                 SizedBox(
                   width: 32,
-                  child: Text(list[i].hm, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: AppColors.navy), textAlign: TextAlign.center),
+                  child: Text(
+                    list[i].hm,
+                    style: const TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w800,
+                      color: AppColors.navy,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
                 ),
                 SizedBox(
                   width: 32,
-                  child: Text(list[i].am.toStringAsFixed(1), style: const TextStyle(fontSize: 11), textAlign: TextAlign.center),
+                  child: Text(
+                    list[i].am.toStringAsFixed(1),
+                    style: const TextStyle(fontSize: 11),
+                    textAlign: TextAlign.center,
+                  ),
                 ),
                 SizedBox(
                   width: 38,
-                  child: Text(list[i].mutu.toStringAsFixed(1), style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700), textAlign: TextAlign.end),
+                  child: Text(
+                    list[i].mutu.toStringAsFixed(1),
+                    style: const TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w700,
+                    ),
+                    textAlign: TextAlign.end,
+                  ),
                 ),
               ],
             ),
@@ -476,21 +600,51 @@ class _DhsScreenState extends State<DhsScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           _buildSummaryMetric('Total SKS', '${summary.totalSks} SKS'),
-          Container(width: 1, height: 32, color: AppColors.gold.withValues(alpha: 0.4)),
-          _buildSummaryMetric('Total Mutu', summary.totalMutu.toStringAsFixed(1)),
-          Container(width: 1, height: 32, color: AppColors.gold.withValues(alpha: 0.4)),
-          _buildSummaryMetric('IP Kumulatif (IPK)', summary.ipsFormatted, isHighlighted: true),
-          Container(width: 1, height: 32, color: AppColors.gold.withValues(alpha: 0.4)),
+          Container(
+            width: 1,
+            height: 32,
+            color: AppColors.gold.withValues(alpha: 0.4),
+          ),
+          _buildSummaryMetric(
+            'Total Mutu',
+            summary.totalMutu.toStringAsFixed(1),
+          ),
+          Container(
+            width: 1,
+            height: 32,
+            color: AppColors.gold.withValues(alpha: 0.4),
+          ),
+          _buildSummaryMetric(
+            'IP Kumulatif (IPK)',
+            summary.ipsFormatted,
+            isHighlighted: true,
+          ),
+          Container(
+            width: 1,
+            height: 32,
+            color: AppColors.gold.withValues(alpha: 0.4),
+          ),
           _buildSummaryMetric('Predikat', 'Sangat Memuaskan'),
         ],
       ),
     );
   }
 
-  Widget _buildSummaryMetric(String label, String value, {bool isHighlighted = false}) {
+  Widget _buildSummaryMetric(
+    String label,
+    String value, {
+    bool isHighlighted = false,
+  }) {
     return Column(
       children: [
-        Text(label, style: const TextStyle(fontSize: 9, color: AppColors.muted, fontWeight: FontWeight.w600)),
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 9,
+            color: AppColors.muted,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
         const SizedBox(height: 2),
         Text(
           value,
@@ -520,7 +674,11 @@ class _DhsScreenState extends State<DhsScreen> {
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(color: AppColors.border),
               ),
-              child: const Icon(Icons.qr_code_2_rounded, size: 48, color: AppColors.navy),
+              child: const Icon(
+                Icons.qr_code_2_rounded,
+                size: 48,
+                color: AppColors.navy,
+              ),
             ),
             const SizedBox(height: 4),
             const Text(
@@ -534,17 +692,33 @@ class _DhsScreenState extends State<DhsScreen> {
         Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: const [
-            Text('Bogor, 23 Oktober 2024', style: TextStyle(fontSize: 10, color: AppColors.ink)),
+            Text(
+              'Bogor, 23 Oktober 2024',
+              style: TextStyle(fontSize: 10, color: AppColors.ink),
+            ),
             SizedBox(height: 2),
-            Text('a.n. Dekan Fakultas,', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600)),
-            Text('Kepala Biro Administrasi Akademik', style: TextStyle(fontSize: 9.5, color: AppColors.muted)),
+            Text(
+              'a.n. Dekan Fakultas,',
+              style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600),
+            ),
+            Text(
+              'Kepala Biro Administrasi Akademik',
+              style: TextStyle(fontSize: 9.5, color: AppColors.muted),
+            ),
             SizedBox(height: 40),
             Text(
               'Dr. Ir. H. Boash Sujana, M.Kom.',
-              style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800, decoration: TextDecoration.underline),
+              style: TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w800,
+                decoration: TextDecoration.underline,
+              ),
             ),
             SizedBox(height: 2),
-            Text('NIP. 19780512 200312 1 002', style: TextStyle(fontSize: 9.5, color: AppColors.muted)),
+            Text(
+              'NIP. 19780512 200312 1 002',
+              style: TextStyle(fontSize: 9.5, color: AppColors.muted),
+            ),
           ],
         ),
       ],
