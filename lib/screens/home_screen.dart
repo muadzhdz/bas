@@ -6,6 +6,7 @@ import '../models/user_model.dart';
 import '../services/session_service.dart';
 import '../theme/app_theme.dart';
 import '../widgets/gender_avatar.dart';
+import 'bimbingan_screen.dart';
 import 'dhs_screen.dart';
 import 'finance_screen.dart';
 import 'khs_screen.dart';
@@ -256,6 +257,13 @@ class _HomeScreenState extends State<HomeScreen> {
               context,
               MaterialPageRoute(
                 builder: (context) => FinanceScreen(user: widget.user),
+              ),
+            );
+          } else if (label == 'Bimbingan') {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => BimbinganScreen(user: widget.user),
               ),
             );
           } else if (label == 'Presensi') {
