@@ -7,6 +7,7 @@ import '../services/session_service.dart';
 import '../theme/app_theme.dart';
 import '../widgets/gender_avatar.dart';
 import 'dhs_screen.dart';
+import 'finance_screen.dart';
 import 'khs_screen.dart';
 import 'krs_screen.dart';
 import 'presensi_screen.dart';
@@ -248,6 +249,13 @@ class _HomeScreenState extends State<HomeScreen> {
               context,
               MaterialPageRoute(
                 builder: (context) => DhsScreen(user: widget.user),
+              ),
+            );
+          } else if (label == 'Finance') {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => FinanceScreen(user: widget.user),
               ),
             );
           } else if (label == 'Presensi') {
