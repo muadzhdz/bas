@@ -12,10 +12,10 @@ class NilaiModel {
   final double naQuis;
   final double naTugas;
   final double naHadir;
-  final String hm; // Huruf Mutu (e.g. A, B+, B)
-  final double na; // Nilai Akhir angka (e.g. 79.3)
-  final double am; // Angka Mutu (e.g. 3.5)
-  final double mutu; // SKS * AM (e.g. 10.5)
+  final String hm;
+  final double na;
+  final double am;
+  final double mutu;
   final String nip;
   final String thnAkademik;
   final String semester;
@@ -45,21 +45,33 @@ class NilaiModel {
     required this.dentry,
   });
 
-  // Menghitung SKS dari rumus Mutu = SKS * AM
   int get sks {
     if (am > 0) {
       return (mutu / am).round();
     }
-    return 3; // default SKS jika AM bernilai 0
+    return 3;
   }
 
-  // Nama mata kuliah representatif berdasarkan kode matkul
   String get namaMatkul {
     switch (kdMatkul.toUpperCase()) {
       case 'GC327':
         return 'Pemrograman Perangkat Bergerak';
       case 'GC302':
         return 'Sistem Basis Data Terdistribusi';
+      case 'GC311':
+        return 'Animasi & Pemodelan 3D';
+      case 'GC319':
+        return 'Rekayasa Multimedia Terapan';
+      case 'GC330':
+        return 'Pemrograman Berorientasi Objek';
+      case 'GC333':
+        return 'Jaringan Komputer & Cloud';
+      case 'GC334':
+        return 'Desain Pengalaman Pengguna (UI/UX)';
+      case 'GC335':
+        return 'Pemrograman Web Lanjut';
+      case 'GC336':
+        return 'Etika Profesi & Komunikasi';
       default:
         return 'Mata Kuliah $kdMatkul';
     }
@@ -130,7 +142,6 @@ class NilaiModel {
   }
 }
 
-// Model ringkasan KHS (Indeks Prestasi Semester)
 class KhsSummary {
   final List<NilaiModel> daftarNilai;
 
@@ -152,4 +163,24 @@ class KhsSummary {
 
   String get semester =>
       daftarNilai.isNotEmpty ? daftarNilai.first.semester : '1';
+
+  List<String> get availableSemesters {
+    final semesters = daftarNilai
+        .map((e) => e.semester.trim())
+        .where((s) => s.isNotEmpty)
+        .toSet()
+        .toList();
+    semesters.sort();
+    return semesters;
+  }
+
+  KhsSummary filterBySemester(String targetSemester) {
+    if (targetSemester.isEmpty || targetSemester == 'Semua') {
+      return this;
+    }
+    final filtered = daftarNilai
+        .where((n) => n.semester.trim() == targetSemester.trim())
+        .toList();
+    return KhsSummary(filtered);
+  }
 }

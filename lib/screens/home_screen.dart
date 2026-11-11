@@ -1,17 +1,29 @@
 import 'package:flutter/material.dart';
 
+import '../api/mahasiswa_api.dart';
+import '../models/mahasiswa_model.dart';
 import '../models/user_model.dart';
+import '../services/session_service.dart';
 import '../theme/app_theme.dart';
+import '../widgets/gender_avatar.dart';
 import 'dhs_screen.dart';
 import 'khs_screen.dart';
 import 'krs_screen.dart';
 import 'presensi_screen.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   final void Function(String title) onOpenMenu;
   final UserModel? user;
 
   const HomeScreen({super.key, required this.onOpenMenu, this.user});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  final MahasiswaApi _mahasiswaApi = MahasiswaApi();
+  MahasiswaModel? _mahasiswa;
 
   static const List<(IconData, String)> _menus = [
     (Icons.assignment_outlined, 'KRS'),
@@ -26,13 +38,36 @@ class HomeScreen extends StatelessWidget {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    _loadMahasiswa();
+  }
+
+  Future<void> _loadMahasiswa() async {
+    final cached = await SessionService.getMahasiswa();
+    if (mounted && cached != null) {
+      setState(() => _mahasiswa = cached);
+    }
+
+    final npm = widget.user?.userid.toString() ?? '12523030';
+    try {
+      final fresh = await _mahasiswaApi.fetchMahasiswaByNpm(npm);
+      if (fresh != null) {
+        await SessionService.saveMahasiswa(fresh);
+        if (mounted) {
+          setState(() => _mahasiswa = fresh);
+        }
+      }
+    } catch (_) {}
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.white,
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 120),
         children: [
-          // Kartu Identitas Mahasiswa (Tanpa teks selamat datang, dengan foto mentor)
           _studentIdentityCard(),
           const SizedBox(height: 22),
           Row(
@@ -46,13 +81,13 @@ class HomeScreen extends StatelessWidget {
                   color: AppColors.ink,
                 ),
               ),
-              if (user != null)
+              if (widget.user != null)
                 Text(
-                  'Status: ${user!.isStatusAktif ? "Aktif" : "Nonaktif"}',
+                  'Status: ${widget.user!.isStatusAktif ? "Aktif" : "Nonaktif"}',
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w700,
-                    color: user!.isStatusAktif
+                    color: widget.user!.isStatusAktif
                         ? Colors.green[700]
                         : Colors.red[700],
                   ),
@@ -77,10 +112,19 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget _studentIdentityCard() {
-    final displayName = user?.nama.isNotEmpty == true
-        ? user!.nama
-        : "Mu'adz Hudzaifah";
-    final displayNpm = user != null ? 'NPM ${user!.userid}' : 'NPM 24903460014';
+    final displayName = _mahasiswa?.nama.isNotEmpty == true
+        ? _mahasiswa!.nama
+        : (widget.user?.nama.isNotEmpty == true
+              ? widget.user!.nama
+              : "Mu'adz Hudzaifah");
+    final displayNpm = _mahasiswa != null
+        ? 'NPM ${_mahasiswa!.npm}'
+        : (widget.user != null
+              ? 'NPM ${widget.user!.userid}'
+              : 'NPM 24903460014');
+    final prodiName =
+        _mahasiswa?.namaProdi.toUpperCase() ?? 'TEKNOLOGI REKAYASA MULTIMEDIA';
+    final isFemale = _mahasiswa?.isPerempuan ?? true;
 
     return Container(
       padding: const EdgeInsets.all(18),
@@ -114,9 +158,9 @@ class HomeScreen extends StatelessWidget {
                     color: AppColors.white.withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(6),
                   ),
-                  child: const Text(
-                    'TEKNOLOGI REKAYASA MULTIMEDIA',
-                    style: TextStyle(
+                  child: Text(
+                    prodiName,
+                    style: const TextStyle(
                       color: AppColors.gold,
                       fontSize: 10,
                       fontWeight: FontWeight.w800,
@@ -146,23 +190,7 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 14),
-          // Foto Mahasiswa (Foto Mentor)
-          Container(
-            padding: const EdgeInsets.all(2.5),
-            decoration: BoxDecoration(
-              color: AppColors.gold,
-              borderRadius: BorderRadius.circular(18),
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(16),
-              child: Image.asset(
-                'assets/images/mentor-profile.jpg',
-                width: 58,
-                height: 58,
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
+          GenderAvatar(isFemale: isFemale, size: 58),
         ],
       ),
     );
@@ -173,12 +201,12 @@ class HomeScreen extends StatelessWidget {
     String? disabledReason;
 
     if (label == 'KRS') {
-      isEnabled = user?.isKrsAktif ?? true;
+      isEnabled = widget.user?.isKrsAktif ?? true;
       if (!isEnabled) {
         disabledReason = 'Menu KRS sedang dinonaktifkan (bperwalian = 0)';
       }
     } else if (label == 'Presensi') {
-      isEnabled = user?.isAbsenAktif ?? true;
+      isEnabled = widget.user?.isAbsenAktif ?? true;
       if (!isEnabled) {
         disabledReason = 'Menu Presensi sedang dinonaktifkan (babsen = 0)';
       }
@@ -204,27 +232,33 @@ class HomeScreen extends StatelessWidget {
           } else if (label == 'KRS') {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => KrsScreen(user: user)),
+              MaterialPageRoute(
+                builder: (context) => KrsScreen(user: widget.user),
+              ),
             );
           } else if (label == 'KHS') {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => KhsScreen(user: user)),
+              MaterialPageRoute(
+                builder: (context) => KhsScreen(user: widget.user),
+              ),
             );
           } else if (label == 'DHS') {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => DhsScreen(user: user)),
+              MaterialPageRoute(
+                builder: (context) => DhsScreen(user: widget.user),
+              ),
             );
           } else if (label == 'Presensi') {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => PresensiScreen(user: user),
+                builder: (context) => PresensiScreen(user: widget.user),
               ),
             );
           } else {
-            onOpenMenu(label);
+            widget.onOpenMenu(label);
           }
         },
         child: Container(
