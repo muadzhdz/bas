@@ -12,6 +12,7 @@ import 'finance_screen.dart';
 import 'khs_screen.dart';
 import 'krs_screen.dart';
 import 'presensi_screen.dart';
+import 'sertifikat_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   final void Function(String title) onOpenMenu;
@@ -271,6 +272,13 @@ class _HomeScreenState extends State<HomeScreen> {
               context,
               MaterialPageRoute(
                 builder: (context) => PresensiScreen(user: widget.user),
+              ),
+            );
+          } else if (label == 'Sertifikat') {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => SertifikatScreen(user: widget.user),
               ),
             );
           } else {
