@@ -16,9 +16,21 @@ class KhsScreen extends StatefulWidget {
 
 class _KhsScreenState extends State<KhsScreen> {
   final NilaiApi _nilaiApi = NilaiApi();
+
   bool _isLoading = true;
   String? _errorMessage;
   KhsSummary? _summary;
+  String _selectedSemester = 'Semua';
+
+  static const List<String> _semesterOptions = [
+    'Semua',
+    '1',
+    '2',
+    '3',
+    '4',
+    '5',
+    '6',
+  ];
 
   @override
   void initState() {
@@ -40,7 +52,7 @@ class _KhsScreenState extends State<KhsScreen> {
         _summary = summary;
         _isLoading = false;
       });
-    } catch (e) {
+    } catch (_) {
       if (!mounted) return;
       setState(() {
         _errorMessage = 'Gagal memuat data KHS. Periksa koneksi internet Anda.';
@@ -321,16 +333,17 @@ class _KhsScreenState extends State<KhsScreen> {
       );
     }
 
-    final summary = _summary;
-    if (summary == null || summary.daftarNilai.isEmpty) {
+    final fullSummary = _summary;
+    if (fullSummary == null || fullSummary.daftarNilai.isEmpty) {
       return const Center(
         child: Text(
-          'Belum ada data nilai untuk semester ini.',
+          'Belum ada data nilai yang terdaftar.',
           style: TextStyle(color: AppColors.muted),
         ),
       );
     }
 
+    final filteredSummary = fullSummary.filterBySemester(_selectedSemester);
     final studentName = widget.user?.nama.isNotEmpty == true
         ? widget.user!.nama
         : 'Sofi Arianti';
@@ -342,24 +355,25 @@ class _KhsScreenState extends State<KhsScreen> {
       child: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          // Hero Summary Card
-          _buildSummaryHero(studentName, studentNpm, summary),
-          const SizedBox(height: 20),
-
-          // Header List Mata Kuliah
+          _buildSummaryHero(studentName, studentNpm, filteredSummary),
+          const SizedBox(height: 18),
+          _buildSemesterFilter(),
+          const SizedBox(height: 18),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
-                'Daftar Nilai Semester',
-                style: TextStyle(
+              Text(
+                _selectedSemester == 'Semua'
+                    ? 'Seluruh Mata Kuliah'
+                    : 'Nilai Semester $_selectedSemester',
+                style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w800,
                   color: AppColors.ink,
                 ),
               ),
               Text(
-                '${summary.daftarNilai.length} Mata Kuliah',
+                '${filteredSummary.daftarNilai.length} Mata Kuliah',
                 style: const TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
@@ -369,28 +383,64 @@ class _KhsScreenState extends State<KhsScreen> {
             ],
           ),
           const SizedBox(height: 12),
-
-          // List Mata Kuliah
-          for (final nilai in summary.daftarNilai) _buildMatkulCard(nilai),
-
+          if (filteredSummary.daftarNilai.isEmpty)
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 36, horizontal: 20),
+              decoration: BoxDecoration(
+                color: AppColors.offWhite,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: AppColors.border),
+              ),
+              child: Column(
+                children: [
+                  const Icon(
+                    Icons.folder_open_rounded,
+                    size: 44,
+                    color: AppColors.muted,
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    'Belum Ada Nilai di Semester $_selectedSemester',
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w800,
+                      color: AppColors.ink,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  const Text(
+                    'Nilai untuk semester ini belum diterbitkan oleh bagian akademik.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 12, color: AppColors.muted),
+                  ),
+                ],
+              ),
+            )
+          else
+            for (final nilai in filteredSummary.daftarNilai)
+              _buildMatkulCard(nilai),
           const SizedBox(height: 16),
-          // Download KHS Button
           FilledButton.icon(
             onPressed: () {
+              final target = _selectedSemester == 'Semua'
+                  ? 'Kumulatif'
+                  : 'Semester $_selectedSemester';
               ScaffoldMessenger.of(context)
                 ..hideCurrentSnackBar()
                 ..showSnackBar(
-                  const SnackBar(
-                    content: Text(
-                      'Mengunduh KHS Semester 1 dalam format PDF...',
-                    ),
-                    duration: Duration(milliseconds: 1400),
+                  SnackBar(
+                    content: Text('Mengunduh KHS $target dalam format PDF...'),
+                    duration: const Duration(milliseconds: 1400),
                     behavior: SnackBarBehavior.floating,
                   ),
                 );
             },
             icon: const Icon(Icons.download_rounded, color: AppColors.navyDark),
-            label: const Text('Unduh KHS (PDF)'),
+            label: Text(
+              _selectedSemester == 'Semua'
+                  ? 'Unduh KHS Kumulatif (PDF)'
+                  : 'Unduh KHS Semester $_selectedSemester (PDF)',
+            ),
             style: FilledButton.styleFrom(
               backgroundColor: AppColors.gold,
               foregroundColor: AppColors.navyDark,
@@ -405,7 +455,71 @@ class _KhsScreenState extends State<KhsScreen> {
     );
   }
 
+  Widget _buildSemesterFilter() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Filter Semester:',
+          style: TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w800,
+            color: AppColors.ink,
+          ),
+        ),
+        const SizedBox(height: 8),
+        SizedBox(
+          height: 38,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            itemCount: _semesterOptions.length,
+            separatorBuilder: (_, _) => const SizedBox(width: 8),
+            itemBuilder: (context, index) {
+              final opt = _semesterOptions[index];
+              final isSelected = _selectedSemester == opt;
+              final label = opt == 'Semua' ? 'Semua Semester' : 'Semester $opt';
+
+              return ChoiceChip(
+                label: Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
+                    color: isSelected ? AppColors.white : AppColors.ink,
+                  ),
+                ),
+                selected: isSelected,
+                selectedColor: AppColors.navy,
+                backgroundColor: AppColors.offWhite,
+                showCheckmark: false,
+                side: BorderSide(
+                  color: isSelected ? AppColors.navy : AppColors.border,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                onSelected: (selected) {
+                  if (selected) {
+                    setState(() => _selectedSemester = opt);
+                  }
+                },
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _buildSummaryHero(String name, String npm, KhsSummary summary) {
+    final semesterSubtitle = _selectedSemester == 'Semua'
+        ? 'Semua Semester • T.A. ${summary.thnAkademik}'
+        : 'Semester $_selectedSemester • T.A. ${summary.thnAkademik}';
+
+    final scoreLabel = _selectedSemester == 'Semua'
+        ? 'IPK KUMULATIF'
+        : 'IP SEMESTER';
+
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -444,19 +558,20 @@ class _KhsScreenState extends State<KhsScreen> {
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      'NPM $npm • Semester ${summary.semester}',
+                      'NPM $npm',
                       style: const TextStyle(
                         fontSize: 13,
-                        color: AppColors.gold,
+                        color: Color(0xFF9FB0C9),
                         fontWeight: FontWeight.w600,
                       ),
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      'Tahun Akademik ${summary.thnAkademik}',
+                      semesterSubtitle,
                       style: const TextStyle(
                         fontSize: 12,
-                        color: Color(0xFF9FB0C9),
+                        color: AppColors.gold,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
                   ],
@@ -476,9 +591,9 @@ class _KhsScreenState extends State<KhsScreen> {
                 ),
                 child: Column(
                   children: [
-                    const Text(
-                      'IP SEMESTER',
-                      style: TextStyle(
+                    Text(
+                      scoreLabel,
+                      style: const TextStyle(
                         fontSize: 9,
                         letterSpacing: 1.1,
                         fontWeight: FontWeight.w800,
@@ -505,14 +620,21 @@ class _KhsScreenState extends State<KhsScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              _buildMetricItem('Total SKS', '${summary.totalSks} SKS'),
+              _buildMetricItem('Beban SKS', '${summary.totalSks} SKS'),
               Container(width: 1, height: 26, color: const Color(0xFF1E3A5F)),
               _buildMetricItem(
                 'Total Mutu',
                 summary.totalMutu.toStringAsFixed(1),
               ),
               Container(width: 1, height: 26, color: const Color(0xFF1E3A5F)),
-              _buildMetricItem('Status', 'Sangat Baik'),
+              _buildMetricItem(
+                'Predikat',
+                summary.ips >= 3.5
+                    ? 'Dengan Pujian'
+                    : summary.ips >= 3.0
+                    ? 'Sangat Baik'
+                    : 'Baik',
+              ),
             ],
           ),
         ],
@@ -604,7 +726,7 @@ class _KhsScreenState extends State<KhsScreen> {
                           ),
                           const SizedBox(width: 8),
                           Text(
-                            '${nilai.sks} SKS',
+                            '${nilai.sks} SKS • Smt ${nilai.semester}',
                             style: const TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.w600,

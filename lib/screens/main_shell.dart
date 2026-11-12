@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import '../models/user_model.dart';
 import '../theme/app_theme.dart';
@@ -78,7 +77,6 @@ class _MainShellState extends State<MainShell> {
 
   void _onTabTapped(int index) {
     if (_currentIndex == index) return;
-    HapticFeedback.lightImpact();
     setState(() => _currentIndex = index);
     _pageController.animateToPage(
       index,

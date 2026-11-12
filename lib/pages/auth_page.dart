@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../api/auth_api.dart';
+import '../api/mahasiswa_api.dart';
 import '../screens/main_shell.dart';
 import '../services/session_service.dart';
 import '../theme/app_theme.dart';
@@ -42,11 +43,17 @@ class _AuthPageState extends State<AuthPage> {
     if (!mounted) return;
 
     if (result.isSuccess && result.user != null) {
-      // Simpan session user ke lokal storage perangkat
       await SessionService.saveUser(result.user!);
+      try {
+        final mahasiswa = await MahasiswaApi().fetchMahasiswaByNpm(
+          result.user!.userid.toString(),
+        );
+        if (mahasiswa != null) {
+          await SessionService.saveMahasiswa(mahasiswa);
+        }
+      } catch (_) {}
       if (!mounted) return;
 
-      // Langsung beralih ke Beranda tanpa alert popup
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
