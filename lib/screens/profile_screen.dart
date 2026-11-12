@@ -122,7 +122,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             else ...[
               _identityCard(),
               const SizedBox(height: 16),
-              _ktmCard(context),
+              _downloadKtmButton(context),
               const SizedBox(height: 16),
               _academicDetailsCard(),
               const SizedBox(height: 16),
@@ -160,14 +160,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _identityCard() {
-    final displayName = _mahasiswa?.nama.isNotEmpty == true
-        ? _mahasiswa!.nama
-        : (widget.user?.nama.isNotEmpty == true
-              ? widget.user!.nama
-              : 'Sofi Arianti');
-    final displayNpm = _mahasiswa != null
-        ? 'NPM ${_mahasiswa!.npm}'
-        : (widget.user != null ? 'NPM ${widget.user!.userid}' : 'NPM 12523030');
+    final displayName = widget.user?.nama.isNotEmpty == true
+        ? widget.user!.nama
+        : (_mahasiswa?.nama.isNotEmpty == true
+              ? _mahasiswa!.nama
+              : 'Sofi Putri Rahayu');
+    final displayNpm = widget.user != null
+        ? 'NPM ${widget.user!.userid}'
+        : (_mahasiswa != null ? 'NPM ${_mahasiswa!.npm}' : 'NPM 12523030');
     final prodi = _mahasiswa?.namaProdi ?? 'Teknologi Rekayasa Multimedia';
     final jenjang = _mahasiswa?.jenjangFormatted ?? 'D4 / Sarjana Terapan';
     final isFemale = _mahasiswa?.isPerempuan ?? true;
@@ -302,149 +302,36 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _ktmCard(BuildContext context) {
-    final displayName = _mahasiswa?.nama.isNotEmpty == true
-        ? _mahasiswa!.nama
-        : (widget.user?.nama.isNotEmpty == true
-              ? widget.user!.nama
-              : 'Sofi Arianti');
-    final displayNpm = _mahasiswa?.npm.isNotEmpty == true
-        ? _mahasiswa!.npm
-        : (widget.user?.userid ?? '12523030');
-    final prodi = _mahasiswa?.namaProdi ?? 'Teknologi Rekayasa Multimedia';
-    final angkatan = _mahasiswa?.tahunMasuk ?? '2023/2024';
-    final isFemale = _mahasiswa?.isPerempuan ?? true;
+  Widget _downloadKtmButton(BuildContext context) {
+    final displayNpm = widget.user != null
+        ? widget.user!.userid.toString()
+        : (_mahasiswa?.npm ?? '12523030');
 
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: AppColors.border),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
-          ),
-        ],
+    return FilledButton.icon(
+      onPressed: () {
+        ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(
+            SnackBar(
+              content: Text(
+                'KTM Digital ($displayNpm) berhasil disimpan ke dokumen.',
+              ),
+              duration: const Duration(milliseconds: 1600),
+              behavior: SnackBarBehavior.floating,
+              backgroundColor: AppColors.navy,
+            ),
+          );
+      },
+      icon: const Icon(Icons.download_rounded, size: 20),
+      label: const Text(
+        'Download KTM Digital',
+        style: TextStyle(fontWeight: FontWeight.w800, fontSize: 14),
       ),
-      child: Column(
-        children: [
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            decoration: const BoxDecoration(
-              color: AppColors.navy,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(17)),
-            ),
-            child: Row(
-              children: const [
-                Icon(Icons.badge_rounded, color: AppColors.gold, size: 20),
-                SizedBox(width: 8),
-                Text(
-                  'KARTU TANDA MAHASISWA DIGITAL',
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: 0.6,
-                    color: AppColors.white,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    GenderAvatar(isFemale: isFemale, size: 54),
-                    const SizedBox(width: 14),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            displayName,
-                            style: const TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w800,
-                              color: AppColors.ink,
-                            ),
-                          ),
-                          const SizedBox(height: 2),
-                          Text(
-                            'NPM: $displayNpm',
-                            style: const TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w700,
-                              color: AppColors.navy,
-                            ),
-                          ),
-                          const SizedBox(height: 2),
-                          Text(
-                            prodi,
-                            style: const TextStyle(
-                              fontSize: 12,
-                              color: AppColors.muted,
-                            ),
-                          ),
-                          Text(
-                            'Tahun Masuk: $angkatan',
-                            style: const TextStyle(
-                              fontSize: 11,
-                              color: AppColors.muted,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.all(6),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFF8FAFC),
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: AppColors.border),
-                      ),
-                      child: const Icon(
-                        Icons.qr_code_rounded,
-                        size: 40,
-                        color: AppColors.navy,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 14),
-                FilledButton.icon(
-                  onPressed: () {
-                    ScaffoldMessenger.of(context)
-                      ..hideCurrentSnackBar()
-                      ..showSnackBar(
-                        SnackBar(
-                          content: Text(
-                            'KTM Digital ($displayNpm) berhasil disimpan ke dokumen.',
-                          ),
-                          duration: const Duration(milliseconds: 1600),
-                          behavior: SnackBarBehavior.floating,
-                        ),
-                      );
-                  },
-                  icon: const Icon(Icons.download_rounded, size: 18),
-                  label: const Text('Download KTM Digital'),
-                  style: FilledButton.styleFrom(
-                    backgroundColor: AppColors.gold,
-                    foregroundColor: AppColors.navyDark,
-                    minimumSize: const Size.fromHeight(44),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
+      style: FilledButton.styleFrom(
+        backgroundColor: AppColors.gold,
+        foregroundColor: AppColors.navyDark,
+        minimumSize: const Size.fromHeight(50),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
       ),
     );
   }

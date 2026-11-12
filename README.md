@@ -1,24 +1,25 @@
 # Boash Academic System (BAS)
 
-Aplikasi portal akademik mahasiswa berbasis Flutter dengan antarmuka modern, sistem autentikasi terintegrasi, pemindaian QR Code presensi perkuliahan, dan penyimpanan sesi lokal.
+Portal akademik mobile mahasiswa berbasis Flutter yang terintegrasi dengan layanan akademik kampus, autentikasi sesi, dan pemindai presensi perkuliahan.
 
-## Fitur Utama
+## Modul Sistem
 
-- Autentikasi Mahasiswa: Integrasi login dengan verifikasi kredensial NPM dan kata sandi.
-- Sesi Persisten (Auto-Login): Sesi pengguna tersimpan di penyimpanan lokal perangkat sehingga tidak perlu login berulang saat aplikasi dibuka kembali.
-- Presensi QR Code: Pemindai kode QR realtime menggunakan mobile_scanner dengan validasi sesi presensi perkuliahan.
-- Manajemen Akademik: Akses informasi akademik mahasiswa meliputi KRS, KHS, dan DHS.
-- Desain Antarmuka: Mengadopsi palet warna Navy dan Gold yang konsisten dan responsif.
+- Autentikasi: Login mahasiswa berbasis verifikasi hash SHA-1 dan validasi status akademik aktif.
+- Beranda & Navigasi: Rangkuman identitas mahasiswa, kalender akademik, dan navigasi utama.
+- Berita & Informasi: Pengumuman kegiatan perkuliahan dan administrasi kampus.
+- Akademik: Pengelolaan Kartu Rencana Studi (KRS), Kartu Hasil Studi (KHS), dan Daftar Hasil Studi (DHS).
+- Layanan Mahasiswa: Informasi status pembayaran (Finance), log bimbingan akademik, dan repositori sertifikat prestasi.
+- Presensi Perkuliahan: Pemindaian barcode/QR code presensi secara real-time via kamera perangkat.
+- Profil: Rincian data mahasiswa dan ekspor dokumen KTM digital.
 
-## Tech Stack
+## Persyaratan Lingkungan
 
-- Framework: Flutter (SDK ^3.13.0)
-- Bahasa: Dart
-- State & Storage: SharedPreferences (Session Management)
-- Kamera & Pemindai: MobileScanner
-- Komunikasi Data: HTTP Client, Crypto (SHA-1)
+- Flutter SDK ^3.13.0
+- Dart SDK ^3.1.0
+- Java OpenJDK 17
+- Android SDK (API 34 / Android 14+)
 
-## Menjalankan Aplikasi
+## Menjalankan Proyek
 
 1. Clone repositori:
    ```bash
@@ -26,21 +27,17 @@ Aplikasi portal akademik mahasiswa berbasis Flutter dengan antarmuka modern, sis
    cd bas
    ```
 
-2. Unduh dependensi:
+2. Pasang dependensi:
    ```bash
    flutter pub get
    ```
 
-3. Jalankan aplikasi pada perangkat Android atau emulator:
+3. Jalankan pengujian:
    ```bash
-   flutter run -d <device-id>
+   flutter test
    ```
 
-4. Bangun APK rilis:
+4. Jalankan aplikasi:
    ```bash
-   flutter build apk --release
+   flutter run
    ```
-
-## Lisensi
-
-Proyek ini dikembangkan untuk kebutuhan internal akademik Boash Academic System.

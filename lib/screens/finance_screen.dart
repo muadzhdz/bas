@@ -168,7 +168,7 @@ class _FinanceScreenState extends State<FinanceScreen> {
   Widget _summaryCard(int totalAmount, int count) {
     final displayName = widget.user?.nama.isNotEmpty == true
         ? widget.user!.nama
-        : "Mu'adz Hudzaifah";
+        : "Sofi Putri Rahayu";
     final displayNpm = widget.user != null
         ? 'NPM ${widget.user!.userid}'
         : 'NPM 12523030';

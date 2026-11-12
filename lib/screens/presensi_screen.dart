@@ -66,7 +66,7 @@ class _PresensiScreenState extends State<PresensiScreen> {
     final isValid = _qrService.validateQr(code) || code.length >= 4;
     final displayName = widget.user?.nama.isNotEmpty == true
         ? widget.user!.nama
-        : "Mu'adz Hudzaifah";
+        : 'Sofi Putri Rahayu';
     final displayNpm = widget.user != null
         ? widget.user!.userid.toString()
         : '12523030';
@@ -188,7 +188,7 @@ class _PresensiScreenState extends State<PresensiScreen> {
   Widget _scannerTab() {
     final displayName = widget.user?.nama.isNotEmpty == true
         ? widget.user!.nama
-        : "Mu'adz Hudzaifah";
+        : 'Sofi Putri Rahayu';
     final displayNpm = widget.user != null
         ? 'NPM ${widget.user!.userid}'
         : 'NPM 12523030';

@@ -115,16 +115,14 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _studentIdentityCard() {
-    final displayName = _mahasiswa?.nama.isNotEmpty == true
-        ? _mahasiswa!.nama
-        : (widget.user?.nama.isNotEmpty == true
-              ? widget.user!.nama
-              : "Mu'adz Hudzaifah");
-    final displayNpm = _mahasiswa != null
-        ? 'NPM ${_mahasiswa!.npm}'
-        : (widget.user != null
-              ? 'NPM ${widget.user!.userid}'
-              : 'NPM 24903460014');
+    final displayName = widget.user?.nama.isNotEmpty == true
+        ? widget.user!.nama
+        : (_mahasiswa?.nama.isNotEmpty == true
+              ? _mahasiswa!.nama
+              : "Sofi Putri Rahayu");
+    final displayNpm = widget.user != null
+        ? 'NPM ${widget.user!.userid}'
+        : (_mahasiswa != null ? 'NPM ${_mahasiswa!.npm}' : 'NPM 12523030');
     final prodiName =
         _mahasiswa?.namaProdi.toUpperCase() ?? 'TEKNOLOGI REKAYASA MULTIMEDIA';
     final isFemale = _mahasiswa?.isPerempuan ?? true;
